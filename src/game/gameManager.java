@@ -10,6 +10,7 @@ import java.util.Collections;
 public class gameManager {
     ArrayList<player> listPlayers = new ArrayList<player>();
     ArrayList<domino> listDominos = new ArrayList<domino>();
+    String spetialRule;
     public gameManager() {
         importDominos("dominos.csv");
     }
@@ -39,8 +40,9 @@ public class gameManager {
             }
         }
     }
-    public void newGame(String rules, ArrayList<player> listPlayers){
+    public void newGame(ArrayList<player> listPlayers,String spetialRule){
         Collections.shuffle(listDominos);
         this.listPlayers = listPlayers;
+        this.spetialRule = spetialRule;
     }
 }
