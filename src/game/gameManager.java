@@ -1,7 +1,7 @@
 package game;
 
+import javafx.util.Pair;
 import player.player;
-
 import java.util.*;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -13,7 +13,7 @@ public class gameManager {
     ArrayList<player> listPlayers = new ArrayList<player>();
     ArrayList<Color> listKings = new ArrayList<Color>();
     ArrayList<domino> listDominos = new ArrayList<domino>();
-    ArrayList<HashMap<domino,Color>> displayedDomino = new ArrayList<HashMap<domino,Color>>();
+    ArrayList<Pair<domino,Color>> displayedDomino = new ArrayList<Pair<domino,Color>>();
     String spetialRule;
     int totalKings;
 
@@ -83,7 +83,7 @@ public class gameManager {
         this.displayedDomino = new LinkedHashMap<domino, Color>();
         for (int i = 0; i < totalKings; i++) {
             System.out.println(listDominos.get(i));
-            displayedDomino.add(new HashMap<domino,Color>(listDominos.get(i),null));
+            displayedDomino.add(new Pair<domino,Color>(listDominos.get(i),null));
         }
         this.listDominos = new ArrayList<domino>(this.listDominos.subList(totalKings, listDominos.size()));
         for (Iterator<Color> i = this.listKings.iterator(); i.hasNext(); ) {
@@ -96,7 +96,7 @@ public class gameManager {
         Scanner scan = new Scanner(System.in);
         int choix = scan.nextInt();
         System.out.println(choix);
-        displayedDomino.get(choix).replace(displayedDomino.get(choix));
+        displayedDomino.get(choix).setAt0;
         System.out.println(displayedDomino);
     }
 
