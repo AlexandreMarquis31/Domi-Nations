@@ -2,7 +2,7 @@ package player;
 import java.awt.Color;
 
 public class player {
-    Color color;
+    public Color color;
     String nom;
     int score;
     public int kings;
@@ -12,5 +12,8 @@ public class player {
         this.color = color;
         this.score = 0;
         this.kings = 1;
+    }
+    public String toString(){
+        return "["+this.nom+"-"+this.color+"]";
     }
 }
