@@ -71,15 +71,15 @@ public class gameManager {
             chooseDomino(player);
         }
         while(listDominos.size() >0){
-            System.out.println(listDominos.size());
-            ArrayList<Pair<domino,player>> dominoToPlace = new ArrayList<>(selectedDominos);
-            dominoToPlace.sort(PairComparator);
-            newLineDomino();
-            newTurn(dominoToPlace);
+            newTurn();
         }
     }
 
-    private void newTurn(ArrayList<Pair<domino,player>> dominoToPlace) {
+    private void newTurn() {
+        System.out.println(listDominos.size());
+        ArrayList<Pair<domino,player>> dominoToPlace = new ArrayList<>(selectedDominos);
+        dominoToPlace.sort(PairComparator);
+        newLineDomino();
         for (Pair<domino,player> pair : dominoToPlace) {
             placeDomino(pair);
             chooseDomino(pair.getValue());
