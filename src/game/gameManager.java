@@ -4,37 +4,33 @@ import javafx.util.Pair;
 import player.player;
 import java.util.*;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.awt.Color;
 
 public class gameManager {
-    ArrayList<player> listPlayers = new ArrayList<player>();
-    ArrayList<Color> listKings = new ArrayList<Color>();
-    ArrayList<domino> listDominos = new ArrayList<domino>();
-    ArrayList<Pair<domino,Color>> displayedDomino = new ArrayList<Pair<domino,Color>>();
-    String spetialRule;
-    int totalKings;
+    private ArrayList<player> listPlayers = new ArrayList<player>();
+    private ArrayList<player> listKings = new ArrayList<player>();
+    private List<domino> listDominos = new ArrayList<>();
+    private List<domino> selectableDominos =  Arrays.asList(new domino[3]);
+    private List<Pair<domino,player>> selectedDominos = Arrays.asList(new Pair[3]);
+    private String specialRule;
+    private int totalKings;
 
     public gameManager() {
-        importDominos("dominos.csv");
+        importDominos();
     }
 
-    public void importDominos(String dominosCSVPath) {
-        String csvFile = dominosCSVPath;
+    private void importDominos() {
         BufferedReader br = null;
-        String line = "";
+        String line;
         String cvsSplitBy = ",";
         try {
-            br = new BufferedReader(new FileReader(csvFile));
+            br = new BufferedReader(new FileReader("dominos.csv"));
             br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] infos = line.split(cvsSplitBy);
                 listDominos.add(new domino(new dominoPart(infos[1], Boolean.parseBoolean(infos[0])), new dominoPart(infos[3], Boolean.parseBoolean(infos[2])), Integer.parseInt(infos[4])));
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -48,56 +44,89 @@ public class gameManager {
         }
     }
 
-    public void newGame(ArrayList<player> listPlayers, String spetialRule) {
+    public void newGame(ArrayList<player> list, String rule) {
         Collections.shuffle(listDominos);
-        this.listPlayers = listPlayers;
-        this.spetialRule = spetialRule;
-        ArrayList<domino> list = listDominos;
-        System.out.println(list.size());
-        for (int i = 47; i > 47 - (12 * (4 - listPlayers.size())); i--) {
-            list.remove(i);
-        }
-        System.out.println(list.size());
-        this.listDominos = list;
+        listPlayers = list;
+        specialRule = rule;
+        listDominos = listDominos.subList(0,(12*(listPlayers.size())));
         totalKings = listPlayers.size();
         if (listPlayers.size() == 2) {
-            for (Iterator<player> i = listPlayers.iterator(); i.hasNext(); ) {
-                player player = i.next();
+            for (player player : listPlayers) {
                 player.kings = 2;
             }
             totalKings = 4;
         }
-        for (Iterator<player> i = listPlayers.iterator(); i.hasNext(); ) {
-            player player = i.next();
+        for (player player : listPlayers) {
             for (int k = 0; k< player.kings; k++){
-                listKings.add(player.color);
+                listKings.add(player);
             }
         }
-        Collections.shuffle(this.listKings);
-        newTurn();
+        Collections.shuffle(listKings);
+        start();
+    }
+    private void start(){
         System.out.println(listDominos.size());
-
-    }
-
-    public void newTurn() {
-        this.displayedDomino = new LinkedHashMap<domino, Color>();
-        for (int i = 0; i < totalKings; i++) {
-            System.out.println(listDominos.get(i));
-            displayedDomino.add(new Pair<domino,Color>(listDominos.get(i),null));
+        newLineDomino();
+        for (player player: listKings) {
+            chooseDomino(player);
         }
-        this.listDominos = new ArrayList<domino>(this.listDominos.subList(totalKings, listDominos.size()));
-        for (Iterator<Color> i = this.listKings.iterator(); i.hasNext(); ) {
-            Color color = i.next();
-            chooseDomino(color);
+        while(listDominos.size() >0){
+            System.out.println(listDominos.size());
+            ArrayList<Pair<domino,player>> dominoToPlace = new ArrayList<>(selectedDominos);
+            dominoToPlace.sort(PairComparator);
+            newLineDomino();
+            newTurn(dominoToPlace);
         }
     }
-    public void chooseDomino(Color color){
-        System.out.println("Joueur de couleur: "+color+" choisissez votre domino (nombre de 1 à 4 ou 3) :");
+
+    private void newTurn(ArrayList<Pair<domino,player>> dominoToPlace) {
+        for (Pair<domino,player> pair : dominoToPlace) {
+            placeDomino(pair);
+            chooseDomino(pair.getValue());
+        }
+    }
+    private void placeDomino(Pair<domino,player> pair){
+        System.out.println(pair.getValue().name+" placez votre domino (x):");
+        Scanner scan = new Scanner(System.in);
+        int choixX = scan.nextInt();
+        System.out.println(pair.getValue().name+" placez votre domino (y):");
+        int choixY = scan.nextInt();
+        System.out.println(pair.getValue().name+" placez votre domino (h , v , rh , rv):");
+        scan.nextLine();
+        while (!scan.hasNextLine());
+        String choix = scan.nextLine();
+        switch (choix){
+            case "h" :
+                pair.getValue().board[choixY][choixX] = pair.getKey().part1;
+                pair.getValue().board[choixY][choixX+1] = pair.getKey().part2;
+                break;
+            case "v" :
+                pair.getValue().board[choixY][choixX] = pair.getKey().part1;
+                pair.getValue().board[choixY+1][choixX] = pair.getKey().part2;
+                break;
+            case "rh" :
+                pair.getValue().board[choixY][choixX] = pair.getKey().part2;
+                pair.getValue().board[choixY][choixX+1] = pair.getKey().part1;
+                break;
+            case "rv" :
+                pair.getValue().board[choixY][choixX] = pair.getKey().part2;
+                pair.getValue().board[choixY+1][choixX] = pair.getKey().part1;
+                break;
+        }
+        pair.getValue().showBoard();
+    }
+    private void chooseDomino(player player){
+        System.out.println(player.name+" choisissez votre domino (nombre de 0 à 3 ou 2) :");
         Scanner scan = new Scanner(System.in);
         int choix = scan.nextInt();
-        System.out.println(choix);
-        displayedDomino.get(choix).setAt0;
-        System.out.println(displayedDomino);
+        selectedDominos.set(totalKings-choix-1,new Pair<>(selectableDominos.get(totalKings-choix-1),player));
     }
-
+    private void newLineDomino(){
+        for (int i = totalKings-1; i > -1; i--) {
+            System.out.println(listDominos.get(i));
+            selectableDominos.set(i,listDominos.get(i));
+            listDominos.remove(i);
+        }
+    }
+    private Comparator<Pair<domino, player>> PairComparator = (Pair<domino, player> m1, Pair<domino, player> m2)->Integer.compare(m2.getKey().number,m1.getKey().number);
 }
