@@ -131,4 +131,4 @@ public class gameManager {
     private Comparator<Pair<domino, player>> PairComparator = (Pair<domino, player> m1, Pair<domino, player> m2)->Integer.compare(m2.getKey().number,m1.getKey().number);
 }
 
-//Coucou
+//Coucou tu vas bien ?
