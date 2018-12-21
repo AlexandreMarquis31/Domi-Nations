@@ -44,7 +44,7 @@ public class player {
             System.out.println();
         }
     }
-    public int calculateScore(){
+    private int calculateScore(){
         score = 0;
         for (int i = 0; i< board.length; i++){
             for (int k = 0; k <board[i].length; k++){

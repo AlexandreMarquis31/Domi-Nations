@@ -81,39 +81,39 @@ public class gameManager {
         dominoToPlace.sort(PairComparator);
         newLineDomino();
         for (Pair<domino,player> pair : dominoToPlace) {
-            placeDomino(pair);
+            placeDomino(pair.getValue(),pair.getKey());
             chooseDomino(pair.getValue());
         }
     }
-    private void placeDomino(Pair<domino,player> pair){
-        System.out.println(pair.getValue().name+" placez votre domino (x):");
+    private void placeDomino(player player, domino domino){
+        System.out.println(player.name+" placez votre domino (x):");
         Scanner scan = new Scanner(System.in);
         int choixX = scan.nextInt();
-        System.out.println(pair.getValue().name+" placez votre domino (y):");
+        System.out.println(player.name+" placez votre domino (y):");
         int choixY = scan.nextInt();
-        System.out.println(pair.getValue().name+" placez votre domino (h , v , rh , rv):");
+        System.out.println(player.name+" placez votre domino (h , v , rh , rv):");
         scan.nextLine();
         while (!scan.hasNextLine());
         String choix = scan.nextLine();
         switch (choix){
             case "h" :
-                pair.getValue().board[choixY][choixX] = pair.getKey().part1;
-                pair.getValue().board[choixY][choixX+1] = pair.getKey().part2;
+                player.board[choixY][choixX] = domino.part1;
+                player.board[choixY][choixX+1] = domino.part2;
                 break;
             case "v" :
-                pair.getValue().board[choixY][choixX] = pair.getKey().part1;
-                pair.getValue().board[choixY+1][choixX] = pair.getKey().part2;
+                player.board[choixY][choixX] = domino.part1;
+                player.board[choixY+1][choixX] = domino.part2;
                 break;
             case "rh" :
-                pair.getValue().board[choixY][choixX] = pair.getKey().part2;
-                pair.getValue().board[choixY][choixX+1] = pair.getKey().part1;
+                player.board[choixY][choixX] = domino.part2;
+                player.board[choixY][choixX+1] = domino.part1;
                 break;
             case "rv" :
-                pair.getValue().board[choixY][choixX] = pair.getKey().part2;
-                pair.getValue().board[choixY+1][choixX] = pair.getKey().part1;
+                player.board[choixY][choixX] = domino.part2;
+                player.board[choixY+1][choixX] = domino.part1;
                 break;
         }
-        pair.getValue().showBoard();
+        player.showBoard();
     }
     private void chooseDomino(player player){
         System.out.println(player.name+" choisissez votre domino (nombre de 0 à 3 ou 2) :");
