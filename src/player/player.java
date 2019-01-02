@@ -4,12 +4,12 @@ import game.dominoPart;
 import javafx.util.Pair;
 
 public class player {
-    private Color color;
+    public Color color;
     public String name;
     private int score;
     public int kings;
-    //public dominoPart[][] board = new dominoPart[9][9];
-    public dominoPart[][] board= {
+    public dominoPart[][] board = new dominoPart[9][9];
+    /*public dominoPart[][] board= {
             {new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false)},
             {new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false)},
             {new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("Mer",false),new dominoPart("Mer",true),new dominoPart("Mer",true),new dominoPart("Mer",false),new dominoPart("Terre",false),new dominoPart("Terre",false)},
@@ -19,18 +19,18 @@ public class player {
             {new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("Mont",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false)},
             {new dominoPart("vide",false),new dominoPart("Mont",false),new dominoPart("Mont",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false)},
             {new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("Mont",true),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false),new dominoPart("vide",false)},
-    };
+    };*/
     public player(String nom, Color color){
         this.name = nom;
         this.color = color;
         this.score = 0;
         this.kings = 1;
-        /*for (int i = 0; i< board.length; i++){
+        for (int i = 0; i< board.length; i++){
             for (int k = 0; k <board[i].length; k++){
-                board[i][k] = new dominoPart("vide",false);
+                board[i][k] = new dominoPart("vide",0);
             }
-        }*/
-        System.out.println(calculateScore());
+        }
+        //System.out.println(calculateScore());
     }
     public String toString(){
         return "["+name+"-"+color+"]";
@@ -60,7 +60,7 @@ public class player {
     private Pair<Integer,Integer> calculateScoreZone(dominoPart part,int y , int x){
         System.out.println(part+" "+x+" "+y);
         int totalArea = 1;
-        int totalCrown = part.crown ? 1 : 0;
+        int totalCrown = part.crown;
         Pair <Integer,Integer> newPair = new Pair<>(0,0);
         String type = part.type;
         part.type = "vide";
