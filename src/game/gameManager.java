@@ -167,11 +167,12 @@ public class gameManager {
     }
 
     private int calculateScore(dominoPart[][]  board){
+        dominoPart[][]  tempBoard = board.clone();
         int score = 0;
         for (int i = 0; i< board.length; i++){
             for (int k = 0; k < board[i].length; k++){
                 if (!board[i][k].type.equals("vide")){
-                    Pair<Integer,Integer> pair =calculateScoreZone(board,board[i][k],i,k);
+                    Pair<Integer,Integer> pair =calculateScoreZone(tempBoard,tempBoard[i][k],i,k);
                     score += pair.getKey()*pair.getValue();
                 }
             }
