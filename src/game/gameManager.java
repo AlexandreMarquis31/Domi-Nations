@@ -3,22 +3,31 @@ package game;
 import UI.graphicsManager;
 import javafx.util.Pair;
 import player.player;
+
 import java.util.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
-public class gameManager  {
+public class gameManager {
     private ArrayList<player> listPlayers = new ArrayList<player>();
     private ArrayList<player> listKings = new ArrayList<player>();
     private List<domino> listDominos = new ArrayList<>();
-    private List<domino> selectableDominos =  Arrays.asList(new domino[3]);
-    private List<Pair<domino,player>> selectedDominos = Arrays.asList(new Pair[3]);
+    private List<domino> selectableDominos;
+    private ArrayList<domino> selectedDominos;
     private String specialRule;
     private int totalKings;
     private graphicsManager gManager;
+    private boolean ligne = false;
+    private boolean harmony = false;
+    private int manches = 1;
+    public player currentPlayer = null;
+    public domino currentDomino = null;
+    public static final Object lock = new Object();
+
     public gameManager(graphicsManager g) {
-        this.gManager = g;
+        gManager = g;
         importDominos();
     }
 
@@ -31,7 +40,7 @@ public class gameManager  {
             br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] infos = line.split(cvsSplitBy);
-                listDominos.add(new domino(new dominoPart(infos[1], Integer.parseInt(infos[0])), new dominoPart(infos[3],Integer.parseInt(infos[2])), Integer.parseInt(infos[4])));
+                listDominos.add(new domino(new dominoPart(infos[1], Integer.parseInt(infos[0])), new dominoPart(infos[3], Integer.parseInt(infos[2])), Integer.parseInt(infos[4])));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -46,97 +55,164 @@ public class gameManager  {
         }
     }
 
-    public void newGame(ArrayList<player> list, String rule) {
+    public void newGame(ArrayList<player> list, String rule, int m) {
+        if (rule.equals("Duel")){
+            for (player player : list){
+                player.setSize(13);
+            }
+            graphicsManager.sizePart = 20;
+        } else {
+            listDominos = listDominos.subList(0, (12 * (list.size())));
+        }
+        if (rule.equals("Harmonie")){
+            harmony = true;
+        }
+        manches = m;
+        gManager.manches = m;
         Collections.shuffle(listDominos);
         listPlayers = list;
         specialRule = rule;
-        listDominos = listDominos.subList(0,(12*(listPlayers.size())));
         totalKings = listPlayers.size();
         if (listPlayers.size() == 2) {
-            for (player player : listPlayers) {
-                player.kings = 2;
-            }
+            listKings.addAll(listPlayers);
+            listKings.addAll(listPlayers);
             totalKings = 4;
+        } else {
+            listKings.addAll(listPlayers);
         }
-        for (player player : listPlayers) {
-            for (int k = 0; k< player.kings; k++){
-                listKings.add(player);
-            }
-        }
+        selectedDominos = new ArrayList<>();
+        selectableDominos = Arrays.asList(new domino[totalKings]);
         Collections.shuffle(listKings);
-        gManager.setListPlayers(listPlayers);
+        gManager.setPlayersUI(listPlayers);
         start();
     }
-    private void start(){
-        System.out.println(listDominos.size());
-        newLineDomino();
-        for (player player: listKings) {
-            gManager.currentPlayer.setText(player.name);
-            gManager.currentPlayer.setForeground(player.color);
+
+    private void start() {
+        newLineDominos(ligne ? 1 : 0);
+        ligne = !ligne;
+        System.out.println(listKings);
+        for (player player : listKings) {
+            currentPlayer = player;
+            gManager.setCurrentPlayer(player);
             chooseDomino(player);
         }
-        while(listDominos.size() >0){
+        while (listDominos.size() > 0) {
             newTurn();
         }
+        selectedDominos.sort(DominoComparator);
+        for (domino domino : selectedDominos) {
+            placeDomino(domino);
+        }
+        for (player player : listPlayers) {
+            calculateScore(player);
+        }
+        gManager.showScores(listPlayers,manches);
     }
 
     private void newTurn() {
         System.out.println(listDominos.size());
-        ArrayList<Pair<domino,player>> dominoToPlace = new ArrayList<>(selectedDominos);
-        dominoToPlace.sort(PairComparator);
-        newLineDomino();
-        for (Pair<domino,player> pair : dominoToPlace) {
-            gManager.currentPlayer.setText(pair.getValue().name);
-            gManager.currentPlayer.setForeground(pair.getValue().color);
-            placeDomino(pair.getValue(),pair.getKey());
-            chooseDomino(pair.getValue());
+        ArrayList<domino> dominoToPlace = new ArrayList<>(selectedDominos);
+        dominoToPlace.sort(DominoComparator);
+        newLineDominos(ligne ? 1 : 0);
+        ligne = !ligne;
+        selectedDominos.clear();
+        for (domino domino : dominoToPlace) {
+            currentPlayer = domino.player;
+            placeDomino(domino);
+            chooseDomino(domino.player);
         }
     }
-    private void placeDomino(player player, domino domino){
-        System.out.println(player.name+" placez votre domino (x):");
-        Scanner scan = new Scanner(System.in);
-        int choixX = scan.nextInt();
-        System.out.println(player.name+" placez votre domino (y):");
-        int choixY = scan.nextInt();
-        System.out.println(player.name+" placez votre domino (h , v , rh , rv):");
-        scan.nextLine();
-        while (!scan.hasNextLine());
-        String choix = scan.nextLine();
-        switch (choix){
-            case "h" :
-                player.board[choixY][choixX] = domino.part1;
-                player.board[choixY][choixX+1] = domino.part2;
-                break;
-            case "v" :
-                player.board[choixY][choixX] = domino.part1;
-                player.board[choixY+1][choixX] = domino.part2;
-                break;
-            case "rh" :
-                player.board[choixY][choixX] = domino.part2;
-                player.board[choixY][choixX+1] = domino.part1;
-                break;
-            case "rv" :
-                player.board[choixY][choixX] = domino.part2;
-                player.board[choixY+1][choixX] = domino.part1;
-                break;
+
+    private void chooseDomino(player p) {
+        gManager.labelConsigne.setText("Choisissez votre domino.");
+        synchronized (lock) {
+            while (p.state != player.STATE_DOMINOSELECTED) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        player.showBoard();
+        p.state = player.STATE_IDLE;
+        selectedDominos.add(currentDomino);
     }
-    private void chooseDomino(player player){
-        System.out.println(player.name+" choisissez votre domino (nombre de 0 à 3 ou 2) :");
-        Scanner scan = new Scanner(System.in);
-        int choix = scan.nextInt();
-        selectedDominos.set(totalKings-choix-1,new Pair<>(selectableDominos.get(totalKings-choix-1),player));
+
+    private void placeDomino(domino domino ) {
+        gManager.setCurrentPlayer(domino.player);
+        domino.player.state = player.STATE_PLACINGDOMINO;
+        currentDomino = domino;
+        gManager.labelConsigne.setText("Placez votre domino.");
+        System.out.println(domino);
+        synchronized (lock) {
+            while (domino.player.state != player.STATE_IDLE) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
     }
-    private void newLineDomino(){
-        listDominos.subList(0,totalKings).sort(DominoComparator);
-        gManager.setSelectableDominos(listDominos.subList(0,totalKings));
-        for (int i = totalKings-1; i > -1; i--) {
+
+    private void newLineDominos(int n) {
+        listDominos.subList(0, totalKings).sort(DominoComparator);
+        gManager.newLineDominos(this,listDominos.subList(0, totalKings), n);
+        for (int i = totalKings - 1; i > -1; i--) {
             System.out.println(listDominos.get(i));
-            selectableDominos.set(i,listDominos.get(i));
+            selectableDominos.set(i, listDominos.get(i));
             listDominos.remove(i);
         }
     }
-    private Comparator<Pair<domino, player>> PairComparator = (Pair<domino, player> m1, Pair<domino, player> m2)->Integer.compare(m2.getKey().number,m1.getKey().number);
-    private Comparator<domino> DominoComparator = (domino m1, domino m2)->Integer.compare(m2.number,m1.number);
+
+    private void calculateScore(player player){
+        int score = 0;
+        for (int i = 0; i< player.board.length; i++){
+            for (int k = 0; k < player.board[i].length; k++){
+                if (!player.board[i][k].type.equals("vide")){
+                    Pair<Integer,Integer> pair =calculateScoreZone(player.board,player.board[i][k],i,k);
+                    score += pair.getKey()*pair.getValue();
+                }
+            }
+        }
+        boolean bonus = true;
+        if (harmony){
+            for (dominoPart[] column : player.board){
+                for (dominoPart part : column){
+                    if (part.type.equals("vide")){
+                        bonus = false;
+                    }
+                }
+            }
+            if (bonus){
+                score = score +5 ;
+            }
+        }
+        player.cumuledScore += score;
+    }
+    private Pair<Integer,Integer> calculateScoreZone(dominoPart[][]  board,dominoPart part,int y , int x){
+        int totalArea = 1;
+        int totalCrown = part.crown;
+        Pair <Integer,Integer> newPair = new Pair<>(0,0);
+        String type = part.type;
+        part.type = "vide";
+        if(x < board[y].length-1 && board[y][x+1].type.equals(type)){
+            newPair = calculateScoreZone(board,board[y][x+1],y,x+1);
+        }
+        if( x > 0 && board[y][x-1].type.equals(type)){
+            newPair = calculateScoreZone(board,board[y][x-1],y,x-1);
+        }
+        if(y < board.length-1 && board[y+1][x].type.equals(type)){
+            newPair = calculateScoreZone(board,board[y+1][x],y+1,x);
+        }
+        if(y > 0 && board[y-1][x].type.equals(type)){
+            newPair = calculateScoreZone(board,board[y-1][x],y-1,x);
+        }
+        totalArea += newPair.getKey();
+        totalCrown += newPair.getValue();
+        return new Pair<>(totalArea,totalCrown);
+    }
+
+    private Comparator<domino> DominoComparator = (domino m1, domino m2) -> Integer.compare(m2.number, m1.number);
 }
