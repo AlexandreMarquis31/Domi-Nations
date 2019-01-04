@@ -104,7 +104,7 @@ public class gameManager {
             placeDomino(domino);
         }
         for (player player : listPlayers) {
-            calculateScore(player);
+            player.cumuledScore += calculateScore(player.board);
         }
         gManager.showScores(listPlayers,manches);
     }
@@ -166,19 +166,19 @@ public class gameManager {
         }
     }
 
-    private void calculateScore(player player){
+    private int calculateScore(dominoPart[][]  board){
         int score = 0;
-        for (int i = 0; i< player.board.length; i++){
-            for (int k = 0; k < player.board[i].length; k++){
-                if (!player.board[i][k].type.equals("vide")){
-                    Pair<Integer,Integer> pair =calculateScoreZone(player.board,player.board[i][k],i,k);
+        for (int i = 0; i< board.length; i++){
+            for (int k = 0; k < board[i].length; k++){
+                if (!board[i][k].type.equals("vide")){
+                    Pair<Integer,Integer> pair =calculateScoreZone(board,board[i][k],i,k);
                     score += pair.getKey()*pair.getValue();
                 }
             }
         }
         boolean bonus = true;
         if (harmony){
-            for (dominoPart[] column : player.board){
+            for (dominoPart[] column : board){
                 for (dominoPart part : column){
                     if (part.type.equals("vide")){
                         bonus = false;
@@ -189,7 +189,7 @@ public class gameManager {
                 score = score +5 ;
             }
         }
-        player.cumuledScore += score;
+        return score;
     }
     private Pair<Integer,Integer> calculateScoreZone(dominoPart[][]  board,dominoPart part,int y , int x){
         int totalArea = 1;
