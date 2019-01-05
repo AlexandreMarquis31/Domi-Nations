@@ -247,20 +247,21 @@ public class gameManager {
         ArrayList<ArrayList<Integer>> positionsPossiblesDomino1 = new ArrayList<>();
         ArrayList<ArrayList<Integer>> bestPositions = new ArrayList<>();
         int scorePrecedent = calculateScore(player.board);
-        //vérifier que x2 et y2 ne sont pas à l'extérieur du terrain (quand x1 ou y1 sont à la limite)
         for (int x1 = 0; x1 < player.board.length; x1++) {
             for (int y1 = 0; y1 < player.board.length; y1++) {
                 for (int x2 = x1 - 1; x2 < x1 + 1; x2++) {
                     for (int y2 = y1 - 1; y2 < y1 + 1; y2++) {
-                        if (x1 != x2 || y1 != y2) {
-                            if (x1 == x2 || y1 == y2) {
-                                if (domino1.canBePlaced(x1, y1, x2, y2, player.board) == true) {
-                                    ArrayList<Integer> positionPossible = new ArrayList<Integer>();
-                                    positionPossible.add(x1);
-                                    positionPossible.add(y1);
-                                    positionPossible.add(x2);
-                                    positionPossible.add(y2);
-                                    positionsPossiblesDomino1.add(positionPossible);
+                        if(x2 < player.board.length && x2>=0 && y2 < player.board.length && y2 >= 0) {
+                            if (x1 != x2 || y1 != y2) {
+                                if (x1 == x2 || y1 == y2) {
+                                    if (domino1.canBePlaced(x1, y1, x2, y2, player.board) == true) {
+                                        ArrayList<Integer> positionPossible = new ArrayList<Integer>();
+                                        positionPossible.add(x1);
+                                        positionPossible.add(y1);
+                                        positionPossible.add(x2);
+                                        positionPossible.add(y2);
+                                        positionsPossiblesDomino1.add(positionPossible);
+                                    }
                                 }
                             }
                         }
@@ -277,26 +278,32 @@ public class gameManager {
                 for (int y1 = 0; y1 < boardCopy.length; y1++) {
                     for (int x2 = x1 - 1; x2 < x1 + 1; x2++) {
                         for (int y2 = y1 - 1; y2 < y1 + 1; y2++) {
-                            if (x1 != x2 || y1 != y2) {
-                                if (x1 == x2 || y1 == y2) {
-                                    if (domino2.canBePlaced(x1, y1, x2, y2, player.board) == true) {
-                                        int score = calculateScore(boardCopy) - scorePrecedent;
-                                        ArrayList<Integer> positionsDominos1et2 = new ArrayList<Integer>();
-                                        positionsDominos1et2.add(positionsPossiblesDomino1.get(i).get(0));
-                                        positionsDominos1et2.add(positionsPossiblesDomino1.get(i).get(1));
-                                        positionsDominos1et2.add(positionsPossiblesDomino1.get(i).get(2));
-                                        positionsDominos1et2.add(positionsPossiblesDomino1.get(i).get(3));
-                                        positionsDominos1et2.add(x1);
-                                        positionsDominos1et2.add(y1);
-                                        positionsDominos1et2.add(x2);
-                                        positionsDominos1et2.add(y2);
-                                        positionsDominos1et2.add(score);
-                                        if(bestPositions.size()==0 || bestPositions.get(0).get(8)==score){
-                                            bestPositions.add(positionsDominos1et2);
-                                        }
-                                        if(bestPositions.get(0).get(8)<score){
-                                            bestPositions.clear();
-                                            bestPositions.add(positionsDominos1et2);
+                            if(x2 < player.board.length && x2>=0 && y2 < player.board.length && y2 >= 0) {
+                                if (x1 != x2 || y1 != y2) {
+                                    if (x1 == x2 || y1 == y2) {
+                                        if (domino2.canBePlaced(x1, y1, x2, y2, player.board) == true) {
+                                            dominoPart[][] boardCopy2 = boardCopy;
+                                            boardCopy2[y1][x1]=domino2.part1;
+                                            boardCopy2[y2][x2]=domino2.part2;
+                                            //on a bien ajouté le domino2 sur le board copié où il y avait le domino1
+                                            int score = calculateScore(boardCopy2) - scorePrecedent;
+                                            ArrayList<Integer> positionsDominos1et2 = new ArrayList<Integer>();
+                                            positionsDominos1et2.add(positionsPossiblesDomino1.get(i).get(0));
+                                            positionsDominos1et2.add(positionsPossiblesDomino1.get(i).get(1));
+                                            positionsDominos1et2.add(positionsPossiblesDomino1.get(i).get(2));
+                                            positionsDominos1et2.add(positionsPossiblesDomino1.get(i).get(3));
+                                            positionsDominos1et2.add(x1);
+                                            positionsDominos1et2.add(y1);
+                                            positionsDominos1et2.add(x2);
+                                            positionsDominos1et2.add(y2);
+                                            positionsDominos1et2.add(score);
+                                            if (bestPositions.size() == 0 || bestPositions.get(0).get(8) == score) {
+                                                bestPositions.add(positionsDominos1et2);
+                                            }
+                                            if (bestPositions.get(0).get(8) < score) {
+                                                bestPositions.clear();
+                                                bestPositions.add(positionsDominos1et2);
+                                            }
                                         }
                                     }
                                 }
