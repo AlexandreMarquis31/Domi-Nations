@@ -345,7 +345,7 @@ public class gameManager {
     }
 
     //cette fonction va servir à dire, pour chaque doublet de dominos, quelle sera la différence de score avec l'adversaire (il aura forcément les deux autres)
-    private ArrayList<Object[]> differenceDoubletsAvecAdversaire (ArrayList listPlayers, ArrayList selectableDominos ){
+    private ArrayList<Object[]> differenceDoubletsAvecAdversaire (){
         ArrayList<Object[]> listeDifferencesDoublets = new ArrayList<>();
         for(int i=0;i<selectableDominos.size()-1;i++){
             for(int j=i+1;j<selectableDominos.size();j++){
@@ -380,7 +380,7 @@ public class gameManager {
     }
 
     private ArrayList<Object[]> triListeDoublets(){
-        ArrayList<Object[]> liste = differenceDoubletsAvecAdversaire(listPlayers,(ArrayList) selectableDominos);
+        ArrayList<Object[]> liste = differenceDoubletsAvecAdversaire();
         int i=0;
         while( i<liste.size()-1 ){
             if( (int) liste.get(i)[4] < (int) liste.get(i+1)[4]){
@@ -394,6 +394,95 @@ public class gameManager {
         return liste;
         //return la liste de doublets triée de manière décroissante selon la différence
     }
+
+    //cette fonction renvoie une liste entre 1 et 4 (inclus) dominos qui restent à être joués
+    private ArrayList<player> pickOrder (){
+        ArrayList<domino> selectedDominosRestants = selectedDominos;
+        ArrayList<player> pickOrder = new ArrayList<player>();
+        for(int i = 0; i< selectedDominos.size(); i++){
+            for(int j = 0; j< selectableDominos.size();j++){
+                if(selectedDominos.get(i)==selectableDominos.get(j)){
+                    selectedDominosRestants.remove(selectedDominos.get(i));
+                }
+            }
+        }
+        for(int k = 0; k<selectedDominosRestants.size(); k++){
+            pickOrder.add(selectedDominosRestants.get(k).currentPlayer);
+        }
+        return pickOrder;
+    }
+
+    //cette fonction renvoie le domino à sélectionner parmi ceux restants une fois qu'on a joué son tour
+    //on considère qu'on ne l'appelle que quand c'est au tour de l'IA de jouer
+    private domino dominoSelection (){
+        ArrayList<Object[]> listeDoublets= triListeDoublets();
+        ArrayList<player> listePickOrder = pickOrder();
+        ArrayList<domino> selectedDominosRestants = selectedDominos;
+        List<domino> selectableDominosRestants = new ArrayList<domino>();
+        List<domino> selectableDominosDejaPris = new ArrayList<domino>();
+        for(int i = 0; i<selectableDominos.size();i++){ //création de deux listes : les dominos qui ont déjà été choisis et ceux encore libres
+            if(selectableDominos.get(i).currentPlayer == null){
+                selectableDominosRestants.add(selectableDominos.get(i));
+            }
+            else{
+                selectableDominosDejaPris.add(selectableDominos.get(i));
+            }
+        }
+        ArrayList<Object[]> listeDoubletsRestants = listeDoublets;
+        //on va maintenant essayer de supprimer les options qui ne sont plus possibles
+        for(int i = 0; i<listeDoublets.size() ; i++){
+            if(listeDoublets.get(i)[0].currentPlayer == listPlayers.get(1) || listeDoublets.get(i)[1].currentPlayer = listPlayers.get(1)){
+                listeDoubletsRestants.remove(listeDoublets.get(i));
+            }
+        }
+        switch(listePickOrder.size()){
+            case 1 :
+                return selectableDominosRestants.get(0);
+                break;
+            case 2:
+                for(int i=0 ; i<listeDoubletsRestants.size() ; i++){
+                    for(int j =0; i<selectableDominosRestants.size() ; j++){
+                        if(listeDoubletsRestants.get(i)[0] == selectableDominosRestants.get(j) || listeDoubletsRestants.get(i)[1] == selectableDominosRestants.get(j)){
+                            return selectableDominosRestants.get(j);
+                        }
+                    }
+                }
+                return selectableDominosRestants.get(0); //dans le cas où on n'a rien de viable. Voir pour prendre celui qui est le plus profitable à l'autre
+                break;
+            case 3:
+                //on commence par regarder le cas où on a pick en premier et dans ce cas on a juste a compléter le doublet
+                if(selectableDominosDejaPris.get(0).currentPlayer == listPlayers.get(0)){
+                    return (domino) listeDoubletsRestants.get(0)[1];
+                }
+                else {
+                    if (pickOrder.get(0) == pickOrder.get(1)) {
+                        return (domino) listeDoubletsRestants.get(0)[0];
+                    } else {
+                        //faire une fonction qui calcule le domino restant le plus profitable pour l'adversaire, trier par intérêt pour adversaire dans une liste
+                        //enlever de ma listeDoubletsRestants les doublets où je prends en 2e ce qu'il va prendre en 1er et celui où je prends en 1er ce qu'il veut prendre en 1er et en 2e ce qu'il veut prendre en 2e
+                        //prendre le premier domino de mon premier doublet de listeDoubletsRestants
+                    }
+                }
+                return selectableDominosRestants.get(0);
+                break;
+            case 4:
+                if (pickOrder.get(0) == pickOrder.get(1)) { //on est dans le cas MMAA
+                    return (domino) listeDoubletsRestants.get(0)[0];
+                }
+                if (pickOrder.get(1)==pickOrder.get(2)) { //on est dans le cas MAAM
+                    //faire une fonction (ou réutiliser celle existante) pour trier ses doublets pour son intérêt (pas la différence, juste le score pour lui)
+                    //parcourir dans l'ordre de ma liste : si à un moment il a un doublet qui l'intéresse correspondant à l'opposé des doublets qui m'intéresse et que dans tous les doublets plus hauts il y a tjrs un meme domino d1, alors on prend ce domino d1
+                }
+                else{ //on est dans le cas MAMA
+                    //faire la même chose qu'avant (peut etre tout mettre dans le meme else alors)
+                }
+                return selectableDominosRestants.get(0);
+                break;
+        }
+        return selectableDominosRestants.get(0); //dans le cas
+    }
+
+
 
     private Comparator<domino> DominoComparator = (domino m1, domino m2) -> Integer.compare(m2.number, m1.number);
 }
