@@ -100,7 +100,12 @@ public class gameManager {
         for (player player : listKings) {
             currentPlayer = player;
             gManager.setCurrentPlayer(player);
-            chooseDomino(player);
+            if (listPlayers.indexOf(player) == 0){
+                IAPlay(player);
+                chooseDomino(player);
+
+            }
+            //chooseDomino(player);
         }
         while (listDominos.size() > 0) {
             newTurn();
@@ -246,36 +251,33 @@ public class gameManager {
         for (domino domino1 : selectableDominos){
             if (domino1.player == null){
                 for(domino domino2 : selectableDominos){
-                    if (domino2.player == null){
+                    if (domino2.player == null && domino2 != domino1){
                         pointsDoublet(domino1,domino2,player);
                     }
                 }
             }
         }
     }
-    //cette fonction sert à déterminer, pour un doublet de dominos, combien ce doublet peut rapporter au max à un joueur et toutes les coordonnées possibles correspondant à ce score
     private ArrayList<ArrayList<Integer>> pointsDoublet(domino domino1, domino domino2, player player) {
         ArrayList<ArrayList<Integer>> positionsPossiblesDomino1 = new ArrayList<>();
         ArrayList<ArrayList<Integer>> bestPositions = new ArrayList<>();
-        int scorePrecedent = calculateScorePlayer(player);
-        //vérifier que x2 et y2 ne sont pas à l'extérieur du terrain (quand x1 ou y1 sont à la limite)
+        //int scorePrecedent = calculateScorePlayer(player);
+        int scorePrecedent = 0;
         for (int x1 = 0; x1 < player.board.length; x1++) {
             for (int y1 = 0; y1 < player.board.length; y1++) {
                 for (int x2 = x1 - 1; x2 < x1 + 1; x2++) {
                     for (int y2 = y1 - 1; y2 < y1 + 1; y2++) {
-                        //System.out.println("zzzzz");
-                        if (x1 != x2 || y1 != y2) {
-                            //System.out.println("qqqqq");
-                            if (x1 == x2 || y1 == y2) {
-                                //System.out.println("sssss");
-                                if (domino1.canBePlaced(x1, y1, x2, y2, player.board)) {
-                                    //System.out.println("wwwww");
-                                    ArrayList<Integer> positionPossible = new ArrayList<Integer>();
-                                    positionPossible.add(x1);
-                                    positionPossible.add(y1);
-                                    positionPossible.add(x2);
-                                    positionPossible.add(y2);
-                                    positionsPossiblesDomino1.add(positionPossible);
+                        if(x2 < player.board.length && x2>=0 && y2 < player.board.length && y2 >= 0) {
+                            if (x1 != x2 || y1 != y2) {
+                                if (x1 == x2 || y1 == y2) {
+                                    if (domino1.canBePlaced(x1, y1, x2, y2, player.board) == true) {
+                                        ArrayList<Integer> positionPossible = new ArrayList<Integer>();
+                                        positionPossible.add(x1);
+                                        positionPossible.add(y1);
+                                        positionPossible.add(x2);
+                                        positionPossible.add(y2);
+                                        positionsPossiblesDomino1.add(positionPossible);
+                                    }
                                 }
                             }
                         }
@@ -283,43 +285,51 @@ public class gameManager {
                 }
             }
         }
-        dominoPart[][] boardCopy = new dominoPart[player.board.length][player.board.length];
         for (int i = 0; i < positionsPossiblesDomino1.size(); i++) {
-            for (int m =0; m< player.board.length ; m++){
-                for (int k =0; k< player.board.length ; k++){
+            dominoPart[][] boardCopy = new dominoPart[player.board.length][player.board.length] ;
+            for (int m =0 ; m<player.board.length; m++){
+                for (int k =0 ; k<player.board.length; k++){
                     boardCopy[m][k] = new dominoPart(player.board[m][k].type,player.board[m][k].crown);
                 }
             }
-            boardCopy[positionsPossiblesDomino1.get(i).get(1)][positionsPossiblesDomino1.get(i).get(0)]= domino1.part1;
-            boardCopy[positionsPossiblesDomino1.get(i).get(3)][positionsPossiblesDomino1.get(i).get(2)]= domino1.part2;
+            boardCopy[positionsPossiblesDomino1.get(i).get(1)][positionsPossiblesDomino1.get(i).get(0)]= new dominoPart(domino1.part1.type,domino1.part1.crown);
+            boardCopy[positionsPossiblesDomino1.get(i).get(3)][positionsPossiblesDomino1.get(i).get(2)]=new dominoPart(domino1.part2.type,domino1.part2.crown);
             //Ajouter sur boardCopy le domino1 en coords x1,y1,x2,y2 dans la liste positionsPossiblesDomino1
             for (int x1 = 0; x1 < boardCopy.length; x1++) {
                 for (int y1 = 0; y1 < boardCopy.length; y1++) {
                     for (int x2 = x1 - 1; x2 < x1 + 1; x2++) {
                         for (int y2 = y1 - 1; y2 < y1 + 1; y2++) {
-                            //System.out.println("aaadddddddaa");
-                            if (x1 != x2 || y1 != y2) {
-                                //System.out.println("bbb");
-                                if (x1 == x2 || y1 == y2) {
-                                    //System.out.println("xccc");
-                                    if (domino2.canBePlaced(x1, y1, x2, y2, player.board)) {
-                                        int score = calculateScoreBoard(boardCopy) - scorePrecedent;
-                                        ArrayList<Integer> positionsDominos1et2 = new ArrayList<Integer>();
-                                        positionsDominos1et2.add(positionsPossiblesDomino1.get(i).get(0));
-                                        positionsDominos1et2.add(positionsPossiblesDomino1.get(i).get(1));
-                                        positionsDominos1et2.add(positionsPossiblesDomino1.get(i).get(2));
-                                        positionsDominos1et2.add(positionsPossiblesDomino1.get(i).get(3));
-                                        positionsDominos1et2.add(x1);
-                                        positionsDominos1et2.add(y1);
-                                        positionsDominos1et2.add(x2);
-                                        positionsDominos1et2.add(y2);
-                                        positionsDominos1et2.add(score);
-                                        if(bestPositions.size()==0 || bestPositions.get(0).get(8)==score){
-                                            bestPositions.add(positionsDominos1et2);
-                                        }
-                                        if(bestPositions.get(0).get(8)<score){
-                                            bestPositions.clear();
-                                            bestPositions.add(positionsDominos1et2);
+                            if(x2 < player.board.length && x2>=0 && y2 < player.board.length && y2 >= 0) {
+                                if (x1 != x2 || y1 != y2) {
+                                    if (x1 == x2 || y1 == y2) {
+                                        if (domino2.canBePlaced(x1, y1, x2, y2, player.board) == true) {
+                                            dominoPart[][] boardCopy2 = new dominoPart[player.board.length][player.board.length] ;
+                                            for (int j=0 ; j<player.board.length; j++){
+                                                for (int h =0 ; h<player.board.length; h++){
+                                                    boardCopy2[j][h] = new dominoPart(boardCopy[j][h].type,boardCopy[j][h].crown);
+                                                }
+                                            }
+                                            boardCopy2[y1][x1]=new dominoPart(domino2.part1.type,domino2.part1.crown);
+                                            boardCopy2[y2][x2]=new dominoPart(domino2.part2.type,domino2.part2.crown);
+                                            //on a bien ajouté le domino2 sur le board copié où il y avait le domino1
+                                            int score = calculateScoreBoard(boardCopy2) - scorePrecedent;
+                                            ArrayList<Integer> positionsDominos1et2 = new ArrayList<Integer>();
+                                            positionsDominos1et2.add(positionsPossiblesDomino1.get(i).get(0));
+                                            positionsDominos1et2.add(positionsPossiblesDomino1.get(i).get(1));
+                                            positionsDominos1et2.add(positionsPossiblesDomino1.get(i).get(2));
+                                            positionsDominos1et2.add(positionsPossiblesDomino1.get(i).get(3));
+                                            positionsDominos1et2.add(x1);
+                                            positionsDominos1et2.add(y1);
+                                            positionsDominos1et2.add(x2);
+                                            positionsDominos1et2.add(y2);
+                                            positionsDominos1et2.add(score);
+                                            if (bestPositions.size() == 0 || bestPositions.get(0).get(8) == score) {
+                                                bestPositions.add(positionsDominos1et2);
+                                            }
+                                            if (bestPositions.get(0).get(8) < score) {
+                                                bestPositions.clear();
+                                                bestPositions.add(positionsDominos1et2);
+                                            }
                                         }
                                     }
                                 }
