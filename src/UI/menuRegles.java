@@ -2,7 +2,6 @@ package UI;
 
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
-
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
