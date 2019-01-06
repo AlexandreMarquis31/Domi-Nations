@@ -24,7 +24,7 @@ import java.nio.file.Paths;
 
 
 
-public class menuRegles extends Application {
+public class Menu extends Application {
     GameMenu gamemenu = new GameMenu();
     public static void main(String[] args) {
         launch(args);
