@@ -1,5 +1,6 @@
 package game;
 
+import UI.Application;
 import UI.graphicsManager;
 import javafx.util.Pair;
 
@@ -13,21 +14,18 @@ public class gameManager {
     public enum Rule {
         MIDDLEEARTH,
         HARMONY,
-        DUEL,
+        DUEL ,
         DYNASTY
     }
-
-    int e = 0;
-    private ArrayList<player> listPlayers = new ArrayList<player>();
+    public static ArrayList<player> listPlayers = new ArrayList<player>();
     private ArrayList<player> listKings = new ArrayList<player>();
     private List<domino> listDominos = new ArrayList<>();
     private List<domino> selectableDominos;
     private ArrayList<domino> selectedDominos;
-    private EnumSet<Rule> specialRules;
+    public static EnumSet<Rule> specialRules;
     private int totalKings;
     private graphicsManager gManager;
     private boolean ligne = false;
-    private int manches = 1;
     public player currentPlayer = null;
     public domino currentDomino = null;
     public static final Object lock = new Object();
@@ -62,21 +60,22 @@ public class gameManager {
         }
     }
 
-    public void newGame(ArrayList<player> list, EnumSet<Rule> rules, int m) {
-        if (rules == null) {
+    public void newGame(ArrayList<player> list,EnumSet<Rule> rules) {
+        if (rules == null){
             rules = EnumSet.noneOf(gameManager.Rule.class);
         }
         if (rules.contains(gameManager.Rule.DUEL)) {
             for (player player : list) {
-                player.setSize(13);
+                player.newBoard(13);
             }
             graphicsManager.sizePart = 20;
         } else {
             listDominos = listDominos.subList(0, (12 * (list.size())));
             graphicsManager.sizePart = 30;
         }
-        manches = m;
-        gManager.manches = m;
+        if (rules.contains(Rule.DYNASTY)){
+            Application.getInstance().manches = 3;
+        }
         Collections.shuffle(listDominos);
         listPlayers = list;
         specialRules = rules;
@@ -88,6 +87,7 @@ public class gameManager {
         } else {
             listKings.addAll(listPlayers);
         }
+        listDominos = listDominos.subList(0,totalKings*4);
         selectedDominos = new ArrayList<>();
         selectableDominos = Arrays.asList(new domino[totalKings]);
         Collections.shuffle(listKings);
@@ -101,12 +101,8 @@ public class gameManager {
         for (player player : listKings) {
             currentPlayer = player;
             gManager.setCurrentPlayer(player);
-            if (listPlayers.indexOf(player) == 0) {
-                IAPlay(player);
-                chooseDomino(player);
-
-            }
-            //chooseDomino(player);
+            System.out.println(dominoSelection());
+            chooseDomino(player);
         }
         while (listDominos.size() > 0) {
             newTurn();
@@ -120,7 +116,7 @@ public class gameManager {
         for (player player : listPlayers) {
             player.cumuledScore += calculateScorePlayer(player);
         }
-        gManager.showScores(listPlayers, manches);
+        gManager.showScores(listPlayers);
     }
 
     private void newTurn() {
@@ -178,10 +174,9 @@ public class gameManager {
             listDominos.remove(i);
         }
     }
-
-    private int calculateScorePlayer(player player) {
-        int score = 0;
-        score = calculateScoreBoard(player.board);
+    private int calculateScorePlayer(player player){
+        int score ;
+        score= calculateScoreBoard(player.board);
         if (specialRules.contains(Rule.HARMONY) && !player.litter) {
             score += 5;
         }
@@ -202,25 +197,28 @@ public class gameManager {
                     }
                 }
             }
-            if (player.board[minY + (player.size - 1 / 4)][minX + (player.size - 1 / 4)].type.equals("Chateau")) {
+            if (player.board[minY+(player.size-1/4)][minX+(player.size-1/4)].type.equals("Chateau")){
                 score += 10;
             }
-
         }
         return score;
     }
-
     private int calculateScoreBoard(dominoPart[][] board) {
         int score = 0;
         for (int i = 0; i < board.length; i++) {
             for (int k = 0; k < board[i].length; k++) {
-                if (!board[i][k].type.equals("vide")) {
+                if (!board[i][k].type.equals("vide") && !board[i][k].counted ) {
                     Pair<Integer, Integer> pair = calculateScoreZone(board, board[i][k], i, k);
                     score += pair.getKey() * pair.getValue();
+                    //System.out.println(board[i][k].type + "   -   "+pair.getKey() * pair.getValue());
                 }
             }
         }
-        boolean bonus = true;
+        for (int i = 0; i < board.length; i++) {
+            for (int k = 0; k < board[i].length; k++) {
+                board[i][k].counted = false;
+            }
+        }
         return score;
     }
 
@@ -229,17 +227,17 @@ public class gameManager {
         int totalCrown = part.crown;
         Pair<Integer, Integer> newPair = new Pair<>(0, 0);
         String type = part.type;
-        part.type = "vide";
-        if (x < board[y].length - 1 && board[y][x + 1].type.equals(type)) {
+        part.counted = true;
+        if (x < board[y].length - 1 && board[y][x + 1].type.equals(type) && !board[y][x + 1].counted ) {
             newPair = calculateScoreZone(board, board[y][x + 1], y, x + 1);
         }
-        if (x > 0 && board[y][x - 1].type.equals(type)) {
+        if (x > 0 && board[y][x - 1].type.equals(type) && !board[y][x - 1].counted) {
             newPair = calculateScoreZone(board, board[y][x - 1], y, x - 1);
         }
-        if (y < board.length - 1 && board[y + 1][x].type.equals(type)) {
+        if (y < board.length - 1 && board[y + 1][x].type.equals(type) && !board[y + 1][x].counted) {
             newPair = calculateScoreZone(board, board[y + 1][x], y + 1, x);
         }
-        if (y > 0 && board[y - 1][x].type.equals(type)) {
+        if (y > 0 && board[y - 1][x].type.equals(type) && !board[y - 1][x].counted) {
             newPair = calculateScoreZone(board, board[y - 1][x], y - 1, x);
         }
         totalArea += newPair.getKey();
@@ -391,7 +389,7 @@ public class gameManager {
                 }
             }
         }
-        System.out.println(bestPositions);
+        //System.out.println(bestPositions);
         return bestPositions; //dans bestpositions on a les toutes les coordonnées de domino1 et domino2 (supposant que domino1 a été placé en premier) qui correspondent au meilleur score possible du doublet, et ce score est également dedans
         //donc on a une arraylist d'arraylists dans lesquels on a (x1,y1,x2,y2[pour domino1],x1,y1,x2,y2[pour domino2],score)
     }
@@ -459,7 +457,7 @@ public class gameManager {
             }
         }
         for (int k = 0; k < selectedDominosRestants.size(); k++) {
-            pickOrder.add(selectedDominosRestants.get(k).currentPlayer);
+            pickOrder.add(selectedDominosRestants.get(k).player);
         }
         return pickOrder;
     }
@@ -474,7 +472,7 @@ public class gameManager {
         List<domino> selectableDominosDejaPris = new ArrayList<domino>();
 
         for (int i = 0; i < selectableDominos.size(); i++) { //création de deux listes : les dominos qui ont déjà été choisis et ceux encore libres
-            if (selectableDominos.get(i).currentPlayer == null) {
+            if (selectableDominos.get(i).player == null) {
                 selectableDominosRestants.add(selectableDominos.get(i));
             } else {
                 selectableDominosDejaPris.add(selectableDominos.get(i));
@@ -483,7 +481,7 @@ public class gameManager {
         ArrayList<Object[]> listeDoubletsRestants = listeDoublets;
         //on va maintenant essayer de supprimer les options qui ne sont plus possibles
         for (int i = 0; i < listeDoublets.size(); i++) {
-            if (listeDoublets.get(i)[0].currentPlayer == listPlayers.get(1) || listeDoublets.get(i)[1].currentPlayer = listPlayers.get(1)) {
+            if (((domino)listeDoublets.get(i)[0]).player == listPlayers.get(1) || ((domino)listeDoublets.get(i)[1]).player == listPlayers.get(1)) {
                 listeDoubletsRestants.remove(listeDoublets.get(i));
             }
         }
@@ -501,7 +499,6 @@ public class gameManager {
         switch (pickOrder.size()) {
             case 1:
                 return selectableDominosRestants.get(0);
-            break;
             case 2:
                 for (int i = 0; i < listeDoubletsRestants.size(); i++) {
                     for (int j = 0; i < selectableDominosRestants.size(); j++) {
@@ -511,10 +508,9 @@ public class gameManager {
                     }
                 }
                 return selectableDominosRestants.get(0); //dans le cas où on n'a rien de viable. Voir pour prendre celui qui est le plus profitable à l'autre
-            break;
             case 3:
                 //on commence par regarder le cas où on a pick en premier et dans ce cas on a juste a compléter le doublet
-                if (selectableDominosDejaPris.get(0).currentPlayer == listPlayers.get(0)) {
+                if (selectableDominosDejaPris.get(0).player == listPlayers.get(0)) {
                     return (domino) listeDoubletsRestants.get(0)[1];
                 } else {
                     if (pickOrder.get(0) == pickOrder.get(1)) {
@@ -564,8 +560,6 @@ public class gameManager {
 
                     }
                 }
-                return selectableDominosRestants.get(0);
-            break;
             case 4:
                 if (pickOrder.get(0) == pickOrder.get(1)) { //on est dans le cas MMAA
                     return (domino) listeDoubletsRestants.get(0)[0];
@@ -624,8 +618,6 @@ public class gameManager {
                         }
                     }
                     return (domino) listeDoubletsRestantsTailleDouble.get(0)[0];
-                    return selectableDominosRestants.get(0);
-                    break;
                 }
                 return selectableDominosRestants.get(0); //dans le cas
         }
@@ -633,5 +625,5 @@ public class gameManager {
     }
 
 
-    private Comparator<domino> DominoComparator = (domino m1, domino m2) -> Integer.compare(m2.number, m1.number);
+private Comparator<domino> DominoComparator = (domino m1, domino m2) -> Integer.compare(m2.number, m1.number);
 }
