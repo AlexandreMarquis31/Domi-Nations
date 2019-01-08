@@ -4,12 +4,11 @@ import UI.Application;
 import UI.graphicsManager;
 import javafx.util.Pair;
 
-import java.io.File;
-import java.util.*;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 public class gameManager {
     public enum Rule {
@@ -89,7 +88,6 @@ public class gameManager {
         } else {
             listKings.addAll(listPlayers);
         }
-        listDominos = listDominos.subList(0, totalKings * 4);
         selectedDominos = new ArrayList<>();
         selectableDominos = Arrays.asList(new domino[totalKings]);
         Collections.shuffle(listKings);
@@ -137,7 +135,7 @@ public class gameManager {
     private void chooseDomino(player p) {
         gManager.labelConsigne.setText("Choisissez votre domino.");
         if (p.ia) {
-            domino dominoSelect = dominoSelection(listPlayers.get(0),listPlayers.get(1));
+            domino dominoSelect = dominoSelection(listPlayers.get(0), listPlayers.get(1));
             System.out.println(dominoSelect);
             dominoSelect.player = p;
             currentDomino = dominoSelect;
@@ -262,6 +260,11 @@ public class gameManager {
     private ArrayList<ArrayList<Integer>> meilleuresPositionsDomino(domino domino, player player) {
         ArrayList<ArrayList<Integer>> meilleuresPositionsDomino = new ArrayList<>();
         dominoPart[][] boardCopy = new dominoPart[player.board.length][player.board.length];
+        for (int m = 0; m < player.board.length; m++) {
+            for (int k = 0; k < player.board.length; k++) {
+                boardCopy[m][k] = new dominoPart(player.board[m][k].type, player.board[m][k].crown);
+            }
+        }
         for (int x1 = 0; x1 < player.board.length; x1++) {
             for (int y1 = 0; y1 < player.board.length; y1++) {
                 for (int x2 = x1 - 1; x2 < x1 + 1; x2++) {
@@ -428,8 +431,8 @@ public class gameManager {
 
     }
 
-    private ArrayList<Object[]> triListeDoublets(player IA,player adversaire) {
-        ArrayList<Object[]> liste = differenceDoubletsAvecAdversaire(IA,adversaire);
+    private ArrayList<Object[]> triListeDoublets(player IA, player adversaire) {
+        ArrayList<Object[]> liste = differenceDoubletsAvecAdversaire(IA, adversaire);
         int i = 0;
         while (i < liste.size() - 1) {
             if ((int) liste.get(i)[4] < (int) liste.get(i + 1)[4]) {
@@ -465,7 +468,7 @@ public class gameManager {
     //cette fonction renvoie le domino à sélectionner parmi ceux restants une fois qu'on a joué son tour
     //on considère qu'on ne l'appelle que quand c'est au tour de l'IA de jouer
     private domino dominoSelection(player IA, player adversaire) {
-        ArrayList<Object[]> listeDoublets = triListeDoublets(IA,adversaire);
+        ArrayList<Object[]> listeDoublets = triListeDoublets(IA, adversaire);
         ArrayList<player> pickOrder = pickOrder();
         ArrayList<domino> selectedDominosRestants = selectedDominos;
         List<domino> selectableDominosRestants = new ArrayList<domino>();
@@ -631,10 +634,10 @@ public class gameManager {
         for (int x = 0; x < board.length; x++) {
             for (int y = 0; y < board.length; y++) {
                 if (board[x][y].type.equals("vide")) {
-                    if (!board[x + 1][y].type.equals("vide") || biggerThanBoard(x, y, x + 1, y, board) == true || x == board.length - 1) {
-                        if (!board[x - 1][y].type.equals("vide") || biggerThanBoard(x, y, x - 1, y, board) == true || x == 0) {
-                            if (!board[x][y - 1].type.equals("vide") || biggerThanBoard(x, y, x, y - 1, board) == true || y == 0) {
-                                if (!board[x][y + 1].type.equals("vide") || biggerThanBoard(x, y, x, y + 1, board) == true || y == board.length - 1) {
+                    if (!board[x + 1][y].type.equals("vide") || domino.biggerThanBoard(x, y, x + 1, y, board) || x == board.length - 1) {
+                        if (!board[x - 1][y].type.equals("vide") || domino.biggerThanBoard(x, y, x - 1, y, board) || x == 0) {
+                            if (!board[x][y - 1].type.equals("vide") || domino.biggerThanBoard(x, y, x, y - 1, board) || y == 0) {
+                                if (!board[x][y + 1].type.equals("vide") || domino.biggerThanBoard(x, y, x, y + 1, board) || y == board.length - 1) {
                                     return false;
                                 }
                             }
