@@ -137,7 +137,7 @@ public class gameManager {
     private void chooseDomino(player p) {
         gManager.labelConsigne.setText("Choisissez votre domino.");
         if (p.ia) {
-            domino dominoSelect = dominoSelection();
+            domino dominoSelect = dominoSelection(listPlayers.get(0),listPlayers.get(1));
             System.out.println(dominoSelect);
             dominoSelect.player = p;
             currentDomino = dominoSelect;
