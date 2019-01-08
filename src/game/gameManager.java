@@ -231,6 +231,7 @@ public class gameManager {
         }
         return score;
     }
+
     //calculate the score of a certain zone , return the number of cases and the number of crowns
     private Pair<Integer, Integer> calculateScoreZone(dominoPart[][] board, dominoPart part, int y, int x) {
         int totalArea = 1;
@@ -393,11 +394,11 @@ public class gameManager {
     }
 
     //cette fonction va servir à dire, pour chaque doublet de dominos, quelle sera la différence de score avec l'adversaire (il aura forcément les deux autres)
-    private ArrayList<Object[]> differenceDoubletsAvecAdversaire() {
+    private ArrayList<Object[]> differenceDoubletsAvecAdversaire(player IA, player adversaire) {
         ArrayList<Object[]> listeDifferencesDoublets = new ArrayList<>();
         for (int i = 0; i < selectableDominos.size() - 1; i++) {
             for (int j = i + 1; j < selectableDominos.size(); j++) {
-                int scorePourMoi = pointsDoublet((domino) selectableDominos.get(i), (domino) selectableDominos.get(j), (player) listPlayers.get(0)).get(0).get(8);
+                int scorePourMoi = pointsDoublet((domino) selectableDominos.get(i), (domino) selectableDominos.get(j), (player) IA).get(0).get(8);
                 int scorePourAdv = 0;
                 int placeDomino1Adv = 0;
                 int placeDomino2Adv = 0;
@@ -405,7 +406,7 @@ public class gameManager {
                 for (int k = 0; k < selectableDominos.size() - 1; k++) {
                     for (int l = k + 1; l < selectableDominos.size(); l++) {
                         if (k != i && k != j && l != i && l != j) {
-                            scorePourAdv = pointsDoublet((domino) selectableDominos.get(k), (domino) selectableDominos.get(l), (player) listPlayers.get(1)).get(0).get(8);
+                            scorePourAdv = pointsDoublet((domino) selectableDominos.get(k), (domino) selectableDominos.get(l), (player) adversaire).get(0).get(8);
                             placeDomino1Adv = k;
                             placeDomino2Adv = l;
 
@@ -427,8 +428,8 @@ public class gameManager {
 
     }
 
-    private ArrayList<Object[]> triListeDoublets() {
-        ArrayList<Object[]> liste = differenceDoubletsAvecAdversaire();
+    private ArrayList<Object[]> triListeDoublets(player IA,player adversaire) {
+        ArrayList<Object[]> liste = differenceDoubletsAvecAdversaire(IA,adversaire);
         int i = 0;
         while (i < liste.size() - 1) {
             if ((int) liste.get(i)[4] < (int) liste.get(i + 1)[4]) {
@@ -463,8 +464,8 @@ public class gameManager {
 
     //cette fonction renvoie le domino à sélectionner parmi ceux restants une fois qu'on a joué son tour
     //on considère qu'on ne l'appelle que quand c'est au tour de l'IA de jouer
-    private domino dominoSelection() {
-        ArrayList<Object[]> listeDoublets = triListeDoublets();
+    private domino dominoSelection(player IA, player adversaire) {
+        ArrayList<Object[]> listeDoublets = triListeDoublets(IA,adversaire);
         ArrayList<player> pickOrder = pickOrder();
         ArrayList<domino> selectedDominosRestants = selectedDominos;
         List<domino> selectableDominosRestants = new ArrayList<domino>();
@@ -477,10 +478,10 @@ public class gameManager {
                 selectableDominosDejaPris.add(selectableDominos.get(i));
             }
         }
-        ArrayList<Object[]> listeDoubletsRestants = new ArrayList<Object[]> (listeDoublets);
+        ArrayList<Object[]> listeDoubletsRestants = new ArrayList<Object[]>(listeDoublets);
         //on va maintenant essayer de supprimer les options qui ne sont plus possibles
         for (int i = 0; i < listeDoublets.size(); i++) {
-            if (((domino) listeDoublets.get(i)[0]).player == listPlayers.get(1) || ((domino) listeDoublets.get(i)[1]).player == listPlayers.get(1)) {
+            if (((domino) listeDoublets.get(i)[0]).player == adversaire || ((domino) listeDoublets.get(i)[1]).player == adversaire) {
                 listeDoubletsRestants.remove(listeDoublets.get(i));
             }
         }
@@ -509,7 +510,7 @@ public class gameManager {
                 return selectableDominosRestants.get(0); //dans le cas où on n'a rien de viable. Voir pour prendre celui qui est le plus profitable à l'autre
             case 3:
                 //on commence par regarder le cas où on a pick en premier et dans ce cas on a juste a compléter le doublet
-                if (selectableDominosDejaPris.get(0).player == listPlayers.get(0)) {
+                if (selectableDominosDejaPris.get(0).player == IA) {
                     return (domino) listeDoubletsRestants.get(0)[1];
                 } else {
                     if (pickOrder.get(0) == pickOrder.get(1)) {
@@ -518,9 +519,9 @@ public class gameManager {
                         //faire une fonction qui calcule le domino restant le plus profitable pour l'adversaire, trier par intérêt pour adversaire dans une liste
                         //enlever de ma listeDoubletsRestants les doublets où je prends en 2e ce qu'il va prendre en 1er et celui où je prends en 1er ce qu'il veut prendre en 1er et en 2e ce qu'il veut prendre en 2e
                         //prendre le premier domino de mon premier doublet de listeDoubletsRestants
-                        int domino1ScoreAdv = meilleuresPositionsDomino(selectableDominosRestants.get(0), listPlayers.get(1)).get(0).get(0);
-                        int domino2ScoreAdv = meilleuresPositionsDomino(selectableDominosRestants.get(1), listPlayers.get(1)).get(0).get(0);
-                        int domino3ScoreAdv = meilleuresPositionsDomino(selectableDominosRestants.get(2), listPlayers.get(1)).get(0).get(0);
+                        int domino1ScoreAdv = meilleuresPositionsDomino(selectableDominosRestants.get(0), adversaire).get(0).get(0);
+                        int domino2ScoreAdv = meilleuresPositionsDomino(selectableDominosRestants.get(1), adversaire).get(0).get(0);
+                        int domino3ScoreAdv = meilleuresPositionsDomino(selectableDominosRestants.get(2), adversaire).get(0).get(0);
                         ArrayList<Object[]> listeDominosScorePourAdv = new ArrayList<>();
                         Object[] doubletDomino1ScoreAdv = new Object[2];
                         Object[] doubletDomino2ScoreAdv = new Object[2];
@@ -563,10 +564,10 @@ public class gameManager {
                 if (pickOrder.get(0) == pickOrder.get(1)) { //on est dans le cas MMAA
                     return (domino) listeDoubletsRestants.get(0)[0];
                 }
-                int domino1ScoreAdv = meilleuresPositionsDomino(selectableDominosRestants.get(0), listPlayers.get(1)).get(0).get(0);
-                int domino2ScoreAdv = meilleuresPositionsDomino(selectableDominosRestants.get(1), listPlayers.get(1)).get(0).get(0);
-                int domino3ScoreAdv = meilleuresPositionsDomino(selectableDominosRestants.get(2), listPlayers.get(1)).get(0).get(0);
-                int domino4ScoreAdv = meilleuresPositionsDomino(selectableDominosRestants.get(2), listPlayers.get(1)).get(0).get(0);
+                int domino1ScoreAdv = meilleuresPositionsDomino(selectableDominosRestants.get(0), adversaire).get(0).get(0);
+                int domino2ScoreAdv = meilleuresPositionsDomino(selectableDominosRestants.get(1), adversaire).get(0).get(0);
+                int domino3ScoreAdv = meilleuresPositionsDomino(selectableDominosRestants.get(2), adversaire).get(0).get(0);
+                int domino4ScoreAdv = meilleuresPositionsDomino(selectableDominosRestants.get(2), adversaire).get(0).get(0);
                 ArrayList<Object[]> listeDominosScorePourAdv = new ArrayList<>();
                 Object[] doubletDomino1ScoreAdv = new Object[2];
                 Object[] doubletDomino2ScoreAdv = new Object[2];
@@ -625,4 +626,23 @@ public class gameManager {
 
 
     private Comparator<domino> DominoComparator = (domino m1, domino m2) -> Integer.compare(m2.number, m1.number);
+
+    private boolean verifPasDeTrou(dominoPart[][] board) {
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board.length; y++) {
+                if (board[x][y].type.equals("vide")) {
+                    if (!board[x + 1][y].type.equals("vide") || biggerThanBoard(x, y, x + 1, y, board) == true || x == board.length - 1) {
+                        if (!board[x - 1][y].type.equals("vide") || biggerThanBoard(x, y, x - 1, y, board) == true || x == 0) {
+                            if (!board[x][y - 1].type.equals("vide") || biggerThanBoard(x, y, x, y - 1, board) == true || y == 0) {
+                                if (!board[x][y + 1].type.equals("vide") || biggerThanBoard(x, y, x, y + 1, board) == true || y == board.length - 1) {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }
