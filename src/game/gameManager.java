@@ -4,6 +4,7 @@ import UI.Application;
 import UI.graphicsManager;
 import javafx.util.Pair;
 
+import java.io.File;
 import java.util.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -42,7 +43,7 @@ public class gameManager {
         String line;
         String cvsSplitBy = ",";
         try {
-            br = new BufferedReader(new FileReader("dominos.csv"));
+            br = new BufferedReader(new FileReader(new File(gameManager.class.getClassLoader().getResource("dominos.csv").getPath())));
             br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] infos = line.split(cvsSplitBy);
@@ -230,7 +231,7 @@ public class gameManager {
         }
         return score;
     }
-
+    //calculate the score of a certain zone , return the number of cases and the number of crowns
     private Pair<Integer, Integer> calculateScoreZone(dominoPart[][] board, dominoPart part, int y, int x) {
         int totalArea = 1;
         int totalCrown = part.crown;
