@@ -523,6 +523,7 @@ public class gameManager {
         switch (pickOrder.size()) {
             case 1:
                 return selectableDominosRestants.get(0);
+                break;
             case 2:
                 for (int i = 0; i < listeDoubletsRestants.size(); i++) {
                     for (int j = 0; i < selectableDominosRestants.size(); j++) {
@@ -532,6 +533,7 @@ public class gameManager {
                     }
                 }
                 return selectableDominosRestants.get(0); //dans le cas où on n'a rien de viable. Voir pour prendre celui qui est le plus profitable à l'autre
+                break;
             case 3:
                 //on commence par regarder le cas où on a pick en premier et dans ce cas on a juste a compléter le doublet
                 if (selectableDominosDejaPris.get(0).player == IA) {
@@ -584,6 +586,7 @@ public class gameManager {
 
                     }
                 }
+                break;
             case 4:
                 if (pickOrder.get(0) == pickOrder.get(1)) { //on est dans le cas MMAA
                     return (domino) listeDoubletsRestants.get(0)[0];
@@ -642,8 +645,10 @@ public class gameManager {
                         }
                     }
                     return (domino) listeDoubletsRestantsTailleDouble.get(0)[0];
+                    break;
                 }
                 return selectableDominosRestants.get(0); //dans le cas
+
         }
         ArrayList<Object[]> meilleursDominosAdversaire = new ArrayList<>();
         for(int i = 0 ; i<selectableDominosRestants.size() ; i++){
@@ -676,10 +681,10 @@ public class gameManager {
         for (int x = 0; x < board.length; x++) {
             for (int y = 0; y < board.length; y++) {
                 if (board[x][y].type.equals("vide")) {
-                    if ((x+1<board.length &&!board[x + 1][y].type.equals("vide"))|| domino.biggerThanBoard(x, y, x + 1, y, board) || x == board.length - 1) {
+                    if ((x+1==board.length &&!board[x + 1][y].type.equals("vide"))|| domino.biggerThanBoard(x, y, x + 1, y, board) || x == board.length - 1) {
                         if ((x>0 &&!board[x - 1][y].type.equals("vide")) || domino.biggerThanBoard(x, y, x - 1, y, board) || x == 0) {
                             if ((y>0 && !board[x][y - 1].type.equals("vide") )|| domino.biggerThanBoard(x, y, x, y - 1, board) || y == 0) {
-                                if ((y+1<board.length && !board[x][y + 1].type.equals("vide") )|| domino.biggerThanBoard(x, y, x, y + 1, board) || y == board.length - 1) {
+                                if ((y+1==board.length && !board[x][y + 1].type.equals("vide") )|| domino.biggerThanBoard(x, y, x, y + 1, board) || y == board.length - 1) {
                                     return false;
                                 }
                             }
