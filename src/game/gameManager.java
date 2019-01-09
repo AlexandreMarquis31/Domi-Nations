@@ -259,6 +259,7 @@ public class gameManager {
 
     private ArrayList<ArrayList<Integer>> meilleuresPositionsDomino(domino domino, player player) {
         ArrayList<ArrayList<Integer>> meilleuresPositionsDomino = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> positionsAvecTrous = new ArrayList<>();
         dominoPart[][] boardCopy = new dominoPart[player.board.length][player.board.length];
         for (int m = 0; m < player.board.length; m++) {
             for (int k = 0; k < player.board.length; k++) {
@@ -282,7 +283,11 @@ public class gameManager {
                                         positionPossibleDomino.add(y1);
                                         positionPossibleDomino.add(x2);
                                         positionPossibleDomino.add(y2);
-                                        meilleuresPositionsDomino.add(positionPossibleDomino);
+                                        if(verifPasDeTrou(boardCopy)==true) {
+                                            meilleuresPositionsDomino.add(positionPossibleDomino);
+                                        } else {
+                                            positionsAvecTrous.add(positionPossibleDomino);
+                                        }
                                     }
                                 }
                             }
@@ -292,6 +297,9 @@ public class gameManager {
             }
         }
         ArrayList<ArrayList<Integer>> liste = new ArrayList<>(meilleuresPositionsDomino);
+        if(meilleuresPositionsDomino.size()==0) {
+            liste = new ArrayList<>(positionsAvecTrous);
+        }
         int i = 0;
         while (i < liste.size() - 1) {
             if (liste.get(i).get(0) < liste.get(i + 1).get(0)) {
@@ -322,7 +330,7 @@ public class gameManager {
                         if (x2 < player.board.length && x2 >= 0 && y2 < player.board.length && y2 >= 0) {
                             if (x1 != x2 || y1 != y2) {
                                 if (x1 == x2 || y1 == y2) {
-                                    if (domino1.canBePlaced(x1, y1, x2, y2, player.board)) {
+                                    if (domino1.canBePlaced(x1, y1, x2, y2, player.board) && verifPasDeTrou(player.board)) {
                                         ArrayList<Integer> positionPossible = new ArrayList<>();
                                         positionPossible.add(x1);
                                         positionPossible.add(y1);
@@ -354,7 +362,7 @@ public class gameManager {
                             if (x2 < player.board.length && x2 >= 0 && y2 < player.board.length && y2 >= 0) {
                                 if (x1 != x2 || y1 != y2) {
                                     if (x1 == x2 || y1 == y2) {
-                                        if (domino2.canBePlaced(x1, y1, x2, y2, player.board)) {
+                                        if (domino2.canBePlaced(x1, y1, x2, y2, boardCopy) && verifPasDeTrou(boardCopy)) {
                                             dominoPart[][] boardCopy2 = new dominoPart[player.board.length][player.board.length];
                                             for (int j = 0; j < player.board.length; j++) {
                                                 for (int h = 0; h < player.board.length; h++) {
@@ -647,5 +655,38 @@ public class gameManager {
             }
         }
         return true;
+    }
+
+    private domino dominoSuivantSelected (player player, domino dominoToPlace){
+        ArrayList<domino> dominosSelectedForPlayer = new ArrayList<domino>();
+        for(int i = 0; i<selectedDominos.size() ; i++){
+            if(selectedDominos.get(i).player == player){
+                dominosSelectedForPlayer.add(selectableDominos.get(i));
+            }
+        }
+        if(dominosSelectedForPlayer.get(0)==dominoToPlace){
+            return dominosSelectedForPlayer.get(1);
+        }
+        return dominosSelectedForPlayer.get(0);
+    }
+
+    private ArrayList<Integer> placeDomino (player IA, domino dominoToPlace){
+        domino domino2 = dominoSuivantSelected (IA, dominoToPlace);
+        ArrayList<ArrayList<Integer>> coordonneesDoublets = pointsDoublet(dominoToPlace,domino2,IA);
+        ArrayList<Integer> coordonneesDominoToPlace = new ArrayList<>();
+        if(coordonneesDoublets.size()>0) {
+            for (int i = 0; i < 4; i++) {
+                coordonneesDominoToPlace.add(coordonneesDoublets.get(0).get(i));
+            }
+            return coordonneesDominoToPlace;
+        }
+        else{
+            ArrayList<ArrayList<Integer>> listeCoordonneesSiPasDeDoublet = meilleuresPositionsDomino(dominoToPlace, IA);
+            ArrayList<Integer> coordonneesSiPasDeDoublet = new ArrayList<Integer>();
+            for(int i = 1 ; i<5 ; i++){
+                coordonneesSiPasDeDoublet.add(listeCoordonneesSiPasDeDoublet.get(0).get(i));
+            }
+            return coordonneesSiPasDeDoublet;
+        }
     }
 }
