@@ -679,7 +679,7 @@ public class gameManager {
                     if ((x+1<board.length &&!board[x + 1][y].type.equals("vide"))|| domino.biggerThanBoard(x, y, x + 1, y, board) || x == board.length - 1) {
                         if ((x>0 &&!board[x - 1][y].type.equals("vide")) || domino.biggerThanBoard(x, y, x - 1, y, board) || x == 0) {
                             if ((y>0 && !board[x][y - 1].type.equals("vide") )|| domino.biggerThanBoard(x, y, x, y - 1, board) || y == 0) {
-                                if ((y+1 >board.length && !board[x][y + 1].type.equals("vide") )|| domino.biggerThanBoard(x, y, x, y + 1, board) || y == board.length - 1) {
+                                if ((y+1<board.length && !board[x][y + 1].type.equals("vide") )|| domino.biggerThanBoard(x, y, x, y + 1, board) || y == board.length - 1) {
                                     return false;
                                 }
                             }
