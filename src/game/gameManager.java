@@ -461,12 +461,13 @@ public class gameManager {
         ArrayList<player> pickOrder = new ArrayList<>();
         for (int i = 0; i < selectedDominos.size(); i++) {
             for (int j = 0; j < selectableDominos.size(); j++) {
-
                 if (selectedDominos.get(i) == selectableDominos.get(j)) {
                     selectedDominosRestants.remove(selectedDominos.get(i));
                 }
             }
         }
+        //trier la liste des dominos à jouer restants en fonction de leur numéro grâce au DominoComparator
+        selectedDominosRestants.sort(DominoComparator);
         for (int k = 0; k < selectedDominosRestants.size(); k++) {
             pickOrder.add(selectedDominosRestants.get(k).player);
         }
@@ -632,6 +633,25 @@ public class gameManager {
                 }
                 return selectableDominosRestants.get(0); //dans le cas
         }
+        ArrayList<Object[]> meilleursDominosAdversaire = new ArrayList<>();
+        for(int i = 0 ; i<selectableDominosRestants.size() ; i++){
+            ArrayList<ArrayList<Integer>> scoreDominoAdversaire = meilleuresPositionsDomino(selectableDominosRestants.get(i),adversaire);
+            Object[] scoreDominoAdversaire2 = new Object[3];
+            scoreDominoAdversaire2[0] = selectableDominosRestants.get(i);
+            scoreDominoAdversaire2[1] = scoreDominoAdversaire.get(0);
+            meilleursDominosAdversaire.add(scoreDominoAdversaire2);
+        }
+        int p = 0;
+        while(p<meilleursDominosAdversaire.size()-1){
+            if( (int) meilleursDominosAdversaire.get(p)[1]< (int) meilleursDominosAdversaire.get(p+1)[1]){
+                Object[] copy = meilleursDominosAdversaire.get(p);
+                meilleursDominosAdversaire.remove(copy);
+                meilleursDominosAdversaire.add(copy);
+                p--;
+            }
+        }
+
+        return (domino) meilleursDominosAdversaire.get(0)[0];
         return selectableDominosRestants.get(0);
     }
 
