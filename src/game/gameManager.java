@@ -716,11 +716,20 @@ public class gameManager {
         }
         else{
             ArrayList<ArrayList<Integer>> listeCoordonneesSiPasDeDoublet = meilleuresPositionsDomino(dominoToPlace, dominoToPlace.player);
-            ArrayList<Integer> coordonneesSiPasDeDoublet = new ArrayList<Integer>();
+            ArrayList<Integer> coordonneesSiPasDeDoublet = new ArrayList<>();
+            if(listeCoordonneesSiPasDeDoublet.size()==0){
+                ArrayList<Integer> listePoubelle = new ArrayList<>();
+                listePoubelle.add(-1);
+                listePoubelle.add(-1);
+                listePoubelle.add(-1);
+                listePoubelle.add(-1);
+                return listePoubelle;
+            }
             for(int i = 1 ; i<5 ; i++){
                 coordonneesSiPasDeDoublet.add(listeCoordonneesSiPasDeDoublet.get(0).get(i));
             }
             return coordonneesSiPasDeDoublet;
+
         }
     }
 }
