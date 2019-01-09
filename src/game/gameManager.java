@@ -135,7 +135,12 @@ public class gameManager {
     private void chooseDomino(player p) {
         gManager.labelConsigne.setText("Choisissez votre domino.");
         if (p.ia) {
-            domino dominoSelect = dominoSelection(listPlayers.get(0), listPlayers.get(1));
+            player adv = null;
+            if (listPlayers.size() ==2){
+                if (listPlayers.get(0) == p) adv = listPlayers.get(1);
+                if (listPlayers.get(1) == p) adv = listPlayers.get(0);
+            }
+            domino dominoSelect = dominoSelection(p,adv);
             System.out.println(dominoSelect);
             dominoSelect.player = p;
             currentDomino = dominoSelect;
@@ -159,14 +164,21 @@ public class gameManager {
         domino.player.currentState = player.state.PLACINGDOMINO;
         currentDomino = domino;
         gManager.labelConsigne.setText("Placez votre domino.");
-        synchronized (lock) {
-            while (domino.player.currentState != player.state.IDLE) {
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        if (domino.player.ia){
+            ArrayList<Integer> coords = placeDominoIA(domino);
+            domino.player.board[coords.get(1)][coords.get(0)] = domino.part1;
+            domino.player.board[coords.get(2)][coords.get(3)] = domino.part2;
+            domino.player .currentState = player.state.IDLE;
+        } else {
+            synchronized (lock) {
+                while (domino.player.currentState != player.state.IDLE) {
+                    try {
+                        lock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
+                }
             }
         }
     }
@@ -409,7 +421,7 @@ public class gameManager {
         ArrayList<Object[]> listeDifferencesDoublets = new ArrayList<>();
         for (int i = 0; i < selectableDominos.size() - 1; i++) {
             for (int j = i + 1; j < selectableDominos.size(); j++) {
-                int scorePourMoi = pointsDoublet((domino) selectableDominos.get(i), (domino) selectableDominos.get(j), (player) IA).get(0).get(8);
+                int scorePourMoi = pointsDoublet(selectableDominos.get(i),selectableDominos.get(j),IA).get(0).get(8);
                 int scorePourAdv = 0;
                 int placeDomino1Adv = 0;
                 int placeDomino2Adv = 0;
@@ -417,7 +429,7 @@ public class gameManager {
                 for (int k = 0; k < selectableDominos.size() - 1; k++) {
                     for (int l = k + 1; l < selectableDominos.size(); l++) {
                         if (k != i && k != j && l != i && l != j) {
-                            scorePourAdv = pointsDoublet((domino) selectableDominos.get(k), (domino) selectableDominos.get(l), (player) adversaire).get(0).get(8);
+                            scorePourAdv = pointsDoublet( selectableDominos.get(k),selectableDominos.get(l), adversaire).get(0).get(8);
                             placeDomino1Adv = k;
                             placeDomino2Adv = l;
 
@@ -651,7 +663,9 @@ public class gameManager {
             }
         }
 
-        return (domino) meilleursDominosAdversaire.get(0)[0];
+        if(meilleursDominosAdversaire.size() != 0){
+            return (domino) meilleursDominosAdversaire.get(0)[0];
+        }
         return selectableDominosRestants.get(0);
     }
 
@@ -662,10 +676,10 @@ public class gameManager {
         for (int x = 0; x < board.length; x++) {
             for (int y = 0; y < board.length; y++) {
                 if (board[x][y].type.equals("vide")) {
-                    if (!board[x + 1][y].type.equals("vide") || domino.biggerThanBoard(x, y, x + 1, y, board) || x == board.length - 1) {
-                        if (!board[x - 1][y].type.equals("vide") || domino.biggerThanBoard(x, y, x - 1, y, board) || x == 0) {
-                            if (!board[x][y - 1].type.equals("vide") || domino.biggerThanBoard(x, y, x, y - 1, board) || y == 0) {
-                                if (!board[x][y + 1].type.equals("vide") || domino.biggerThanBoard(x, y, x, y + 1, board) || y == board.length - 1) {
+                    if ((x+1<board.length &&!board[x + 1][y].type.equals("vide"))|| domino.biggerThanBoard(x, y, x + 1, y, board) || x == board.length - 1) {
+                        if ((x>0 &&!board[x - 1][y].type.equals("vide")) || domino.biggerThanBoard(x, y, x - 1, y, board) || x == 0) {
+                            if ((y>0 && !board[x][y - 1].type.equals("vide") )|| domino.biggerThanBoard(x, y, x, y - 1, board) || y == 0) {
+                                if ((y+1 >board.length && !board[x][y + 1].type.equals("vide") )|| domino.biggerThanBoard(x, y, x, y + 1, board) || y == board.length - 1) {
                                     return false;
                                 }
                             }
@@ -690,9 +704,9 @@ public class gameManager {
         return dominosSelectedForPlayer.get(0);
     }
 
-    private ArrayList<Integer> placeDomino (player IA, domino dominoToPlace){
-        domino domino2 = dominoSuivantSelected (IA, dominoToPlace);
-        ArrayList<ArrayList<Integer>> coordonneesDoublets = pointsDoublet(dominoToPlace,domino2,IA);
+    private ArrayList<Integer> placeDominoIA(domino dominoToPlace){
+        domino domino2 = dominoSuivantSelected (dominoToPlace.player, dominoToPlace);
+        ArrayList<ArrayList<Integer>> coordonneesDoublets = pointsDoublet(dominoToPlace,domino2,dominoToPlace.player);
         ArrayList<Integer> coordonneesDominoToPlace = new ArrayList<>();
         if(coordonneesDoublets.size()>0) {
             for (int i = 0; i < 4; i++) {
@@ -701,7 +715,7 @@ public class gameManager {
             return coordonneesDominoToPlace;
         }
         else{
-            ArrayList<ArrayList<Integer>> listeCoordonneesSiPasDeDoublet = meilleuresPositionsDomino(dominoToPlace, IA);
+            ArrayList<ArrayList<Integer>> listeCoordonneesSiPasDeDoublet = meilleuresPositionsDomino(dominoToPlace, dominoToPlace.player);
             ArrayList<Integer> coordonneesSiPasDeDoublet = new ArrayList<Integer>();
             for(int i = 1 ; i<5 ; i++){
                 coordonneesSiPasDeDoublet.add(listeCoordonneesSiPasDeDoublet.get(0).get(i));
