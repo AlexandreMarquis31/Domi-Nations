@@ -2,7 +2,7 @@ package game;
 
 import java.awt.Color;
 
-public class player {
+public class Player {
     public enum state {
         IDLE, DOMINOSELECTED, PLACINGDOMINO
     }
@@ -16,7 +16,7 @@ public class player {
     public boolean litter = false;
     public boolean ia = false;
 
-    public player(String nom, Color c) {
+    public Player(String nom, Color c) {
         newBoard(9);
         name = nom;
         color = c;

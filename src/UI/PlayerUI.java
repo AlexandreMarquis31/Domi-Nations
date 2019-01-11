@@ -1,16 +1,16 @@
 package UI;
 
-import game.player;
+import game.Player;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class PlayerUI extends JPanel {
     private int sizePart;
-    player player;
+    Player player;
     DominoPartUI[][] boardUI;
 
-    PlayerUI(player p, int s) {
+    PlayerUI(Player p, int s) {
         player = p;
         sizePart = s;
         boardUI = new DominoPartUI[p.size][p.size];

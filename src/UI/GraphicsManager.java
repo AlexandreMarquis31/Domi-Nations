@@ -1,8 +1,8 @@
 package UI;
 
 import game.Domino;
-import game.gameManager;
-import game.player;
+import game.GameManager;
+import game.Player;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,12 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class graphicsManager extends JPanel implements ActionListener {
+public class GraphicsManager extends JPanel implements ActionListener {
     private JLabel currentPlayerLabel = new JLabel("         ");
     public JLabel labelConsigne = new JLabel("   Choisissez un Domino.   ");
     public static int sizePart = 30;
 
-    graphicsManager(int width, int height) {
+    GraphicsManager(int width, int height) {
         KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         ActionListener actionListener = actionEvent -> System.exit(0);
         registerKeyboardAction(actionListener, stroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -44,7 +44,7 @@ public class graphicsManager extends JPanel implements ActionListener {
         add(trash);
     }
 
-    public void setPlayersUI(ArrayList<player> list) {
+    public void setPlayersUI(ArrayList<Player> list) {
         if (list.size() > 0) {
             PlayerUI playerUI = new PlayerUI(list.get(0), sizePart);
             playerUI.setBounds(0, 0, playerUI.getWidth(), playerUI.getHeight());
@@ -71,7 +71,7 @@ public class graphicsManager extends JPanel implements ActionListener {
         System.out.println(memory);
     }
 
-    public void newLineDominos(gameManager game, List<Domino> list, int n) {
+    public void newLineDominos(GameManager game, List<Domino> list, int n) {
         for (Domino domino : list) {
             domino.turnPriority = list.indexOf(domino);
             int x = getWidth() / 2 - (2 * sizePart + 4) - 10 + n * (2 * sizePart + 4 + 10);
@@ -84,12 +84,12 @@ public class graphicsManager extends JPanel implements ActionListener {
         }
     }
 
-    public void setCurrentPlayer(player player) {
+    public void setCurrentPlayer(Player player) {
         currentPlayerLabel.setText(player.name);
         currentPlayerLabel.setForeground(player.color);
     }
 
-    public void showScores(ArrayList<player> list) {
+    public void showScores(ArrayList<Player> list) {
         JPanel scorePanel = new JPanel(new GridBagLayout());
         scorePanel.setBackground(Color.orange);
         scorePanel.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 - getWidth() / 8, getWidth() / 4, getHeight() / 3);
@@ -101,7 +101,7 @@ public class graphicsManager extends JPanel implements ActionListener {
         score.setFont(new Font("Time New Roman", Font.PLAIN, 30));
         scorePanel.add(score, c);
         int i = 0;
-        for (player player : list) {
+        for (Player player : list) {
             JLabel label = new JLabel(player.name);
             label.setFont(new Font("Time New Roman", Font.PLAIN, 20));
             GridBagConstraints c1 = new GridBagConstraints();
@@ -142,23 +142,23 @@ public class graphicsManager extends JPanel implements ActionListener {
             Thread thread = new Thread() {
                 public void run() {
                     //create another game with the sames players
-                    graphicsManager graphics = new graphicsManager(getWidth(), getHeight());
+                    GraphicsManager graphics = new GraphicsManager(getWidth(), getHeight());
                     Application.getInstance().setGM(graphics);
-                    gameManager game = new gameManager(graphics);
+                    GameManager game = new GameManager(graphics);
                     if (Application.getInstance().manches > 1) {
                         Application.getInstance().manches--;
-                        for (player player : gameManager.listPlayers) {
+                        for (Player player : GameManager.listPlayers) {
                             player.newBoard(player.size);
                         }
                     } else {
-                        ArrayList<player> newListPlayers = new ArrayList<>();
-                        for (player player : gameManager.listPlayers) {
-                            newListPlayers.add(new player(player.name, player.color));
+                        ArrayList<Player> newListPlayers = new ArrayList<>();
+                        for (Player player : GameManager.listPlayers) {
+                            newListPlayers.add(new Player(player.name, player.color));
                         }
-                        gameManager.listPlayers = newListPlayers;
+                        GameManager.listPlayers = newListPlayers;
                     }
-                    gameManager.specialRules.remove(gameManager.Rule.DYNASTY);
-                    game.newGame(gameManager.listPlayers, gameManager.specialRules);
+                    GameManager.specialRules.remove(GameManager.Rule.DYNASTY);
+                    game.newGame(GameManager.listPlayers, GameManager.specialRules);
                 }
             };
             thread.start();

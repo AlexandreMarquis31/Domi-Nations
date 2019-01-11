@@ -5,7 +5,7 @@ public class Domino {
     public DominoPart part1;
     public DominoPart part2;
     public int turnPriority;
-    public player player = null;
+    public Player player = null;
 
     Domino(DominoPart part1, DominoPart part2, int num) {
         this.number = num;
