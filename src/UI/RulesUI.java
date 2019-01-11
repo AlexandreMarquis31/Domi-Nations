@@ -10,6 +10,7 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.charset.Charset;
 
 class RulesUI extends JPanel implements ActionListener {
     private final JTextPane ruleDetails;
@@ -56,20 +57,24 @@ class RulesUI extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        String str = ((JRadioButton) e.getSource()).getActionCommand() ;
         switch (((JRadioButton) e.getSource()).getActionCommand()) {
             case "Duel":
-                ruleDetails.setText(((JRadioButton) e.getSource()).getActionCommand() + "\n\nLe royaume peut désormais faire une taille maximale de 7 × 7 cases. Il faudra alors utiliser la totalités des dominos pour construire de tels royaumes.");
+                str += "\n\nLe royaume peut désormais faire une taille maximale de 7 × 7 cases. Il faudra alors utiliser la totalités des dominos pour construire de tels royaumes.";
                 break;
             case "Harmonie":
-                ruleDetails.setText(((JRadioButton) e.getSource()).getActionCommand() + "\n\nAjouter 5 points de bonus si le royaume est complet (c’est-à- dire, fait exactement 5 × 5 cases).\n");
+                str += "\n\nAjouter 5 points de bonus si le royaume est complet (c’est-à- dire, fait exactement 5 × 5 cases).\n";
                 break;
             case "Empire du Milieu":
-                ruleDetails.setText(((JRadioButton) e.getSource()).getActionCommand() + "\n\nAjouter 10 points de bonus si le château se retrouve au centre du royaume.");
+                str += "\n\nAjouter 10 points de bonus si le château se retrouve au centre du royaume.";
                 break;
             case "Dynastie":
-                ruleDetails.setText(((JRadioButton) e.getSource()).getActionCommand() + "\n\nJouer 3 turns de suite. À la fin des trois turns, le joueur qui a cumulé le plus de points lors des 3 turns remporte la partie.");
+                str += "\n\nJouer 3 turns de suite. À la fin des trois turns, le joueur qui a cumulé le plus de points lors des 3 turns remporte la partie.";
                 break;
         }
+        String strEncoded = new String(str.getBytes(), Charset.forName("UTF-8"));
+        ruleDetails.setText(strEncoded);
+
 
     }
 }
