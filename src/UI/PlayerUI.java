@@ -1,43 +1,45 @@
 package UI;
 
-import game.dominoPart;
-import player.player;
+import game.player;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class PlayerUI extends JPanel {
-    private int sizePart = 30;
-    public player player;
-    public int height = 0;
-    public int width = 0;
+    private int sizePart;
+    player player;
+    DominoPartUI[][] boardUI;
 
-    public PlayerUI(player p) {
-        this.player = p;
-        if (p != null) {
-            this.height = player.board.length * (sizePart + 2) + 2 + 30;
-            this.width = player.board[0].length * (sizePart + 2) + 2;
-        }
-    }
-
-    /**
-     * Manually control what's drawn on this JPanel by calling the paintComponent method
-     * with a graphics object and painting using that object
-     */
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.setColor(Color.orange);
-        g.fillRect(0, 0, width, height);
-        g.setColor(Color.black);
-        for (int i = 0; i < player.board.length; i++) {
-            for (int k = 0; k < player.board[i].length; k++) {
-                g.setColor(player.board[k][i].color);
-                g.fillRect((i * (30 + 2)) + 2, (k * (30 + 2)) + 2, 30, 30);
+    PlayerUI(player p, int s) {
+        player = p;
+        sizePart = s;
+        boardUI = new DominoPartUI[p.size][p.size];
+        setSize(p.size * (s + 2) + 2, p.size * (s + 2) + 2 + 30);
+        setLayout(null);
+        setBackground(Color.orange);
+        for (int i = 0; i < p.board.length; i++) {
+            for (int k = 0; k < p.board[i].length; k++) {
+                boardUI[k][i] = new DominoPartUI(p.board[k][i]);
+                boardUI[k][i].setBounds((i * (s + 2)) + 2, (k * (s + 2)) + 2, s, s);
+                add(boardUI[k][i]);
             }
         }
-        g.setColor(Color.black);
-        g.drawChars(player.name.toCharArray(), 0, player.name.toCharArray().length, 12, height - 12);
-        g.setColor(player.color);
-        g.fillRect(width - 27, height - 27, 20, 20);
+        JLabel label = new JLabel(p.name);
+        label.setBounds(2, getHeight() - 27, 100, 20);
+        add(label);
+        JPanel color = new JPanel();
+        color.setBorder(BorderFactory.createLineBorder(Color.white));
+        color.setBackground(p.color);
+        color.setBounds(getWidth() - 27, getHeight() - 27, 20, 20);
+        add(color);
+    }
+
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        for (int i = 0; i < player.board.length; i++) {
+            for (int k = 0; k < player.board[i].length; k++) {
+                boardUI[k][i].dominoPart = player.board[k][i];
+            }
+        }
     }
 }

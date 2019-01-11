@@ -673,7 +673,7 @@ public class gameManager {
     private Comparator<domino> DominoComparator = (domino m1, domino m2) -> Integer.compare(m2.number, m1.number);
 
     private boolean verifPasDeTrou(dominoPart[][] board) {
-        for (int x = 0; x < board.length; x++) {
+       for (int x = 0; x < board.length; x++) {
             for (int y = 0; y < board.length; y++) {
                 if (board[x][y].type.equals("vide")) {
                     if ((x+1<board.length &&!board[x + 1][y].type.equals("vide"))|| domino.biggerThanBoard(x, y, x + 1, y, board) || x == board.length - 1) {
