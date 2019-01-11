@@ -20,21 +20,21 @@ public class MenuUI extends JPanel implements ActionListener {
         setLayout(null);
         JLabel titre = new JLabel("Domi-Nations");
         titre.setHorizontalAlignment(SwingConstants.CENTER);
-        titre.setBounds(0, 0, width, 140);
-        titre.setFont(new Font("New Time Roman", Font.PLAIN, 40));
+        titre.setBounds(0, 0, width, height/5);
+        titre.setFont(new Font("New Time Roman", Font.PLAIN, height/18));
         add(titre);
         for (int i = 0; i < 4; i++) {
-            PlayerSelectUI playerUI = new PlayerSelectUI(i + 1, 180, 300);
-            playerUI.setLocation(10 + (i * (playerUI.getWidth() + 20)), 140);
+            PlayerSelectUI playerUI = new PlayerSelectUI(i + 1, (int)(width/4.5), (int)(height/2.5));
+            playerUI.setLocation(width/80 + (i * (playerUI.getWidth() + width/40)), height/5);
             listPlayerUI[i] = playerUI;
             add(playerUI);
         }
 
-        rulesUI = new RulesUI(width, 160);
-        rulesUI.setLocation(0, 460);
+        rulesUI = new RulesUI(width, (int)(height/4.4));
+        rulesUI.setLocation(0, (int)(height/1.5));
         add(rulesUI);
         JButton playBut = new JButton("Jouer !");
-        playBut.setBounds(width / 2 - 100, height - 80, 200, 40);
+        playBut.setBounds(width / 2 - height/7, height - height/10, width/4, height/18);
         add(playBut);
         playBut.addActionListener(this);
     }

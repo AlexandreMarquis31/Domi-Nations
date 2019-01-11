@@ -21,7 +21,7 @@ class PlayerSelectUI extends JPanel {
         setLayout(null);
         setSize(width, height);
         JLabel titre = new JLabel("Joueur " + num);
-        titre.setFont(new Font("New Time Roman", Font.BOLD, 20));
+        titre.setFont(new Font("New Time Roman", Font.BOLD, height/14));
         titre.setHorizontalAlignment(SwingConstants.CENTER);
         titre.setBounds(0, 0, width, height / 8);
         add(titre);

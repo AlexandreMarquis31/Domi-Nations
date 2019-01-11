@@ -2,6 +2,7 @@ import UI.Application;
 import UI.MenuUI;
 import javafx.application.Platform;
 
+import java.awt.*;
 
 
 class Main {

@@ -8,8 +8,8 @@ import java.awt.event.ActionListener;
 
 // a JFrame that will contains the game and the menu
 public class Application extends JFrame implements ActionListener {
-    private final int width = 800;
-    private final int height = 700;
+    //private final int width = 800;
+    //private final int height = 700;
     public int turns = 1;
     private JPanel gM;
     private static Application instance = null;
@@ -21,6 +21,9 @@ public class Application extends JFrame implements ActionListener {
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setAlwaysOnTop(false);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int height = (int)screenSize.getHeight()-100;
+        int width = (int)height*8/7;
         setSize(new Dimension(width, height));
         setVisible(true);
         setSize(new Dimension(width, height + getInsets().top));
