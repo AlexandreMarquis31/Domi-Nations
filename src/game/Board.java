@@ -3,67 +3,57 @@ package game;
 import javafx.util.Pair;
 
 public class Board {
-    DominoPart[][] array;
-    public int size;
-    Board(int num){
+    private final DominoPart[][] array;
+    public final int size;
+
+    Board(int num) {
         size = num;
         array = new DominoPart[num][num];
         for (int i = 0; i < num; i++) {
             for (int k = 0; k < num; k++) {
-                set(k,i,new DominoPart("vide", 0));
+                set(k, i, new DominoPart("vide", 0));
             }
         }
-        set((num - 1) / 2,(num - 1) / 2, new DominoPart("Chateau", 0));
+        set((num - 1) / 2, (num - 1) / 2, new DominoPart("Chateau", 0));
     }
-    public int getMin(boolean isX){
+
+    private int getMin(boolean isX) {
         int min = 0;
         for (int i = size - 1; i >= 0; i--) {
             for (int k = 0; k < size; k++) {
-                if (!get(i,k).type.equals("vide")) {
+                if (isX && !get(i, k).type.equals("vide")) {
+                    min = i;
+                } else if (!isX && !get(k, i).type.equals("vide")) {
                     min = i;
                 }
             }
         }
         return min;
     }
-    public int getMinX(){
-        int minX = 0;
-        for (int i = size - 1; i >= 0; i--) {
-            for (int k = 0; k < size; k++) {
-                if (!get(i,k).type.equals("vide")) {
-                    minX = i;
-                }
-            }
-        }
-        return minX;
+
+    public int getMinX() {
+        return getMin(true);
     }
 
-    public int getMinY(){
-        int minY = 0;
-        for (int i = size - 1; i >= 0; i--) {
-            for (int k = 0; k < size; k++) {
-                if (!get(k,i).type.equals("vide")) {
-                    minY = i;
-                }
-            }
-        }
-        return minY;
+    public int getMinY() {
+        return getMin(false);
     }
-    public DominoPart get(int x,int y){
+
+    public DominoPart get(int x, int y) {
         return array[y][x];
     }
-    public void set(int x,int y,DominoPart dominoPart){
-        array[y][x]= dominoPart;
-    }
 
+    public void set(int x, int y, DominoPart dominoPart) {
+        array[y][x] = dominoPart;
+    }
 
 
     public int calculateScore() {
         int score = 0;
         for (int i = 0; i < size; i++) {
             for (int k = 0; k < size; k++) {
-                if (!get(k,i).type.equals("vide") && !get(k,i).counted) {
-                    Pair<Integer, Integer> pair = calculateScoreZone(get(k,i), i, k);
+                if (!get(k, i).type.equals("vide") && !get(k, i).counted) {
+                    Pair<Integer, Integer> pair = calculateScoreZone(get(k, i), i, k);
                     score += pair.getKey() * pair.getValue();
                     //System.out.println(board[i][k].type + "   -   "+pair.getKey() * pair.getValue());
                 }

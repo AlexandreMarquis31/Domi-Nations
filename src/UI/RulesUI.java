@@ -11,12 +11,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class RulesUI extends JPanel implements ActionListener {
-    private JTextPane ruleDetails;
-    JRadioButton duelSwitch;
-    JRadioButton harmonySwitch;
-    JRadioButton middleEarthSwitch;
-    JRadioButton dynastySwitch;
+class RulesUI extends JPanel implements ActionListener {
+    private final JTextPane ruleDetails;
+    final JRadioButton duelSwitch;
+    final JRadioButton harmonySwitch;
+    final JRadioButton middleEarthSwitch;
+    final JRadioButton dynastySwitch;
 
     RulesUI(int width, int height) {
         setSize(width, height);
@@ -67,7 +67,7 @@ public class RulesUI extends JPanel implements ActionListener {
                 ruleDetails.setText(((JRadioButton) e.getSource()).getActionCommand() + "\n\nAjouter 10 points de bonus si le château se retrouve au centre du royaume.");
                 break;
             case "Dynastie":
-                ruleDetails.setText(((JRadioButton) e.getSource()).getActionCommand() + "\n\nJouer 3 manches de suite. À la fin des trois manches, le joueur qui a cumulé le plus de points lors des 3 manches remporte la partie.");
+                ruleDetails.setText(((JRadioButton) e.getSource()).getActionCommand() + "\n\nJouer 3 turns de suite. À la fin des trois turns, le joueur qui a cumulé le plus de points lors des 3 turns remporte la partie.");
                 break;
         }
 

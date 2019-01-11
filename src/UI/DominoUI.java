@@ -12,30 +12,30 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 
 
-public class DominoUI extends JPanel implements KeyListener {
-    public Domino domino;
-    private DominoPartUI do1;
-    private DominoPartUI do2;
+class DominoUI extends JPanel implements KeyListener {
+    private final Domino domino;
+    private final DominoPartUI do1;
+    private final DominoPartUI do2;
     int originalX = 0;
     int originalY = 0;
-    private GameManager game;
-    private JPanel selectedMark = new JPanel();
+    private final GameManager game;
+    private final JPanel selectedMark = new JPanel();
 
     DominoUI(Domino d, int x, int y, GraphicsManager gManager, GameManager g) {
         addKeyListener(this);
         domino = d;
         game = g;
-        setSize(2 * gManager.sizePart + 4, gManager.sizePart + 2);
+        setSize(2 * GraphicsManager.sizePart + 4, GraphicsManager.sizePart + 2);
         setLayout(null);
         setLocation(x, y);
         setBackground(Color.orange);
         do1 = new DominoPartUI(domino.part1);
-        do1.setBounds(1, 1, gManager.sizePart, gManager.sizePart);
+        do1.setBounds(1, 1, GraphicsManager.sizePart, GraphicsManager.sizePart);
         add(do1);
         do2 = new DominoPartUI(domino.part2);
-        do2.setBounds(gManager.sizePart + 3, 1, gManager.sizePart, gManager.sizePart);
+        do2.setBounds(GraphicsManager.sizePart + 3, 1, GraphicsManager.sizePart, GraphicsManager.sizePart);
         add(do2);
-        selectedMark.setBounds(getWidth() / 2 - gManager.sizePart / 3, getHeight() / 2 - gManager.sizePart / 3, gManager.sizePart * 2 / 3, gManager.sizePart * 2 / 3);
+        selectedMark.setBounds(getWidth() / 2 - GraphicsManager.sizePart / 3, getHeight() / 2 - GraphicsManager.sizePart / 3, GraphicsManager.sizePart * 2 / 3, GraphicsManager.sizePart * 2 / 3);
         selectedMark.setBorder(BorderFactory.createLineBorder(Color.white));
         selectedMark.setVisible(false);
         add(selectedMark);
@@ -88,8 +88,8 @@ public class DominoUI extends JPanel implements KeyListener {
                     if (comp instanceof PlayerUI) {
                         //verify that the Player is placing the Domino on the correct board
                         if (x < comp.getX() + comp.getWidth() && y < comp.getY() + comp.getHeight() && x > comp.getX() && y > comp.getY() && ((PlayerUI) comp).player == game.currentPlayer) {
-                            Rectangle rec1 = new Rectangle(((DominoUI) e.getComponent()).do1.getX() + e.getComponent().getX(), ((DominoUI) e.getComponent()).do1.getY() + e.getComponent().getY(), gManager.sizePart, gManager.sizePart);
-                            Rectangle rec2 = new Rectangle(((DominoUI) e.getComponent()).do2.getX() + e.getComponent().getX(), ((DominoUI) e.getComponent()).do2.getY() + e.getComponent().getY(), gManager.sizePart, gManager.sizePart);
+                            Rectangle rec1 = new Rectangle(((DominoUI) e.getComponent()).do1.getX() + e.getComponent().getX(), ((DominoUI) e.getComponent()).do1.getY() + e.getComponent().getY(), GraphicsManager.sizePart, GraphicsManager.sizePart);
+                            Rectangle rec2 = new Rectangle(((DominoUI) e.getComponent()).do2.getX() + e.getComponent().getX(), ((DominoUI) e.getComponent()).do2.getY() + e.getComponent().getY(), GraphicsManager.sizePart, GraphicsManager.sizePart);
                             int place = 0;
                             int x1 = 1000;
                             int x2 = 1000;
@@ -99,7 +99,7 @@ public class DominoUI extends JPanel implements KeyListener {
                             // get the x and y values of the dominos part representation on the board
                             for (int i = 0; i < ((PlayerUI) comp).player.board.size; i++) {
                                 for (int k = 0; k < ((PlayerUI) comp).player.board.size; k++) {
-                                    Rectangle recTest = new Rectangle(((PlayerUI) comp).boardUI[k][i].getX() + comp.getX(), ((PlayerUI) comp).boardUI[k][i].getY() + comp.getY(), gManager.sizePart, gManager.sizePart);
+                                    Rectangle recTest = new Rectangle(((PlayerUI) comp).boardUI[k][i].getX() + comp.getX(), ((PlayerUI) comp).boardUI[k][i].getY() + comp.getY(), GraphicsManager.sizePart, GraphicsManager.sizePart);
                                     if (recTest.intersection(rec1).getHeight() * recTest.intersection(rec1).getWidth() > 0.5 * air && recTest.intersection(rec1).getWidth() > 0 && recTest.intersection(rec1).getHeight() > 0) {
                                         y1 = k;
                                         x1 = i;
@@ -112,8 +112,8 @@ public class DominoUI extends JPanel implements KeyListener {
                             }
                             //place the Domino if it can be placed
                             if ((((DominoUI) e.getComponent()).domino.canBePlaced(x1, y1, x2, y2, game.currentPlayer.board))) {
-                                game.currentPlayer.board.set(x1,y1,((DominoUI) e.getComponent()).do1.dominoPart);
-                                game.currentPlayer.board.set(x2,y2,((DominoUI) e.getComponent()).do2.dominoPart);
+                                game.currentPlayer.board.set(x1, y1, ((DominoUI) e.getComponent()).do1.dominoPart);
+                                game.currentPlayer.board.set(x2, y2, ((DominoUI) e.getComponent()).do2.dominoPart);
                                 synchronized (GameManager.lock) {
                                     game.currentPlayer.currentState = Player.state.IDLE;
                                     //notify the game manager that the Domino has been placed

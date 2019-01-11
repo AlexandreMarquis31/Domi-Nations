@@ -6,11 +6,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-// a JFrame that will countain the game and the menu
+// a JFrame that will contains the game and the menu
 public class Application extends JFrame implements ActionListener {
-    private int width = 800;
-    private int height = 700;
-    public int manches = 1;
+    private final int width = 800;
+    private final int height = 700;
+    public int turns = 1;
     private JPanel gM;
     private static Application instance = null;
     public MenuUI menuUI;

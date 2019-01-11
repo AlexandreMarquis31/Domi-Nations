@@ -3,7 +3,7 @@ package UI;
 import javax.swing.*;
 import java.awt.*;
 
-public class TrashUI extends JPanel {
+class TrashUI extends JPanel {
     TrashUI() {
         setBackground(Color.red);
         setLayout(new GridBagLayout());

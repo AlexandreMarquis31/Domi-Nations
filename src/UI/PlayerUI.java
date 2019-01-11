@@ -5,10 +5,10 @@ import game.Player;
 import javax.swing.*;
 import java.awt.*;
 
-public class PlayerUI extends JPanel {
-    private int sizePart;
-    Player player;
-    DominoPartUI[][] boardUI;
+class PlayerUI extends JPanel {
+    private final int sizePart;
+    final Player player;
+    final DominoPartUI[][] boardUI;
 
     PlayerUI(Player p, int s) {
         player = p;
@@ -19,7 +19,7 @@ public class PlayerUI extends JPanel {
         setBackground(Color.orange);
         for (int i = 0; i < p.board.size; i++) {
             for (int k = 0; k < p.board.size; k++) {
-                boardUI[k][i] = new DominoPartUI(p.board.get(i,k));
+                boardUI[k][i] = new DominoPartUI(p.board.get(i, k));
                 boardUI[k][i].setBounds((i * (s + 2)) + 2, (k * (s + 2)) + 2, s, s);
                 add(boardUI[k][i]);
             }
@@ -38,7 +38,7 @@ public class PlayerUI extends JPanel {
         super.paintComponent(g);
         for (int i = 0; i < player.board.size; i++) {
             for (int k = 0; k < player.board.size; k++) {
-                boardUI[k][i].dominoPart = player.board.get(i,k);
+                boardUI[k][i].dominoPart = player.board.get(i, k);
             }
         }
     }

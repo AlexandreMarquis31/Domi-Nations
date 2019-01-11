@@ -14,8 +14,8 @@ import java.util.List;
 
 
 public class GraphicsManager extends JPanel implements ActionListener {
-    private JLabel currentPlayerLabel = new JLabel("         ");
-    public JLabel labelConsigne = new JLabel("   Choisissez un Domino.   ");
+    private final JLabel currentPlayerLabel = new JLabel("         ");
+    public final JLabel labelIndications = new JLabel("   Choisissez un Domino.   ");
     public static int sizePart = 30;
 
     GraphicsManager(int width, int height) {
@@ -23,21 +23,21 @@ public class GraphicsManager extends JPanel implements ActionListener {
         ActionListener actionListener = actionEvent -> System.exit(0);
         registerKeyboardAction(actionListener, stroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
         setLayout(null);
-        setBackground(new Color(100,150,255));
-        JPanel annonceUI = new JPanel();
-        annonceUI.setBackground(Color.orange);
+        setBackground(new Color(100, 150, 255));
+        JPanel infosUI = new JPanel();
+        infosUI.setBackground(Color.orange);
         JLabel label = new JLabel("     Au tour de :     ");
         label.setForeground(Color.black);
-        annonceUI.setBounds(width / 2 - 58, 0, 116, 50);
-        annonceUI.add(label);
-        annonceUI.add(currentPlayerLabel);
-        add(annonceUI);
-        JPanel consigneUI = new JPanel();
-        consigneUI.setBackground(Color.orange);
-        labelConsigne.setForeground(Color.black);
-        consigneUI.setBounds(width / 2 - 84, 70, 166, 28);
-        consigneUI.add(labelConsigne);
-        add(consigneUI);
+        infosUI.setBounds(width / 2 - 58, 0, 116, 50);
+        infosUI.add(label);
+        infosUI.add(currentPlayerLabel);
+        add(infosUI);
+        JPanel nameUI = new JPanel();
+        nameUI.setBackground(Color.orange);
+        labelIndications.setForeground(Color.black);
+        nameUI.setBounds(width / 2 - 84, 70, 166, 28);
+        nameUI.add(labelIndications);
+        add(nameUI);
         TrashUI trash = new TrashUI();
         trash.setBounds(width / 2 - 54, height - 50, 116, 50);
         add(trash);
@@ -102,7 +102,7 @@ public class GraphicsManager extends JPanel implements ActionListener {
             GridBagConstraints c1 = new GridBagConstraints();
             c1.gridx = 0;
             scorePanel.add(label, c1);
-            JLabel s = new JLabel(String.valueOf(player.cumuledScore));
+            JLabel s = new JLabel(String.valueOf(player.totalScore));
             s.setFont(new Font("Time New Roman", Font.PLAIN, 20));
             GridBagConstraints c2 = new GridBagConstraints();
             c2.gridx = 1;
@@ -110,7 +110,7 @@ public class GraphicsManager extends JPanel implements ActionListener {
             i++;
         }
         String butLabel = "Rejouer";
-        if (Application.getInstance().manches > 1) {
+        if (Application.getInstance().turns > 1) {
             butLabel = "Prochaine Manche";
         }
         JButton button = new JButton(butLabel);
@@ -134,28 +134,26 @@ public class GraphicsManager extends JPanel implements ActionListener {
             MenuUI menu = new MenuUI(getWidth(), getHeight());
             Application.getInstance().setGM(menu);
         } else {
-            Thread thread = new Thread() {
-                public void run() {
-                    //create another game with the sames players
-                    GraphicsManager graphics = new GraphicsManager(getWidth(), getHeight());
-                    Application.getInstance().setGM(graphics);
-                    GameManager game = new GameManager(graphics);
-                    if (Application.getInstance().manches > 1) {
-                        Application.getInstance().manches--;
-                        for (Player player : GameManager.listPlayers) {
-                            player.newBoard(player.board.size);
-                        }
-                    } else {
-                        ArrayList<Player> newListPlayers = new ArrayList<>();
-                        for (Player player : GameManager.listPlayers) {
-                            newListPlayers.add(new Player(player.name, player.color));
-                        }
-                        GameManager.listPlayers = newListPlayers;
+            Thread thread = new Thread(() -> {
+                //create another game with the sames players
+                GraphicsManager graphics = new GraphicsManager(getWidth(), getHeight());
+                Application.getInstance().setGM(graphics);
+                GameManager game = new GameManager(graphics);
+                if (Application.getInstance().turns > 1) {
+                    Application.getInstance().turns--;
+                    for (Player player : GameManager.listPlayers) {
+                        player.newBoard(player.board.size);
                     }
-                    GameManager.specialRules.remove(GameManager.Rule.DYNASTY);
-                    game.newGame(GameManager.listPlayers, GameManager.specialRules);
+                } else {
+                    ArrayList<Player> newListPlayers = new ArrayList<>();
+                    for (Player player : GameManager.listPlayers) {
+                        newListPlayers.add(new Player(player.name, player.color));
+                    }
+                    GameManager.listPlayers = newListPlayers;
                 }
-            };
+                GameManager.specialRules.remove(GameManager.Rule.DYNASTY);
+                game.newGame(GameManager.listPlayers, GameManager.specialRules);
+            });
             thread.start();
         }
     }

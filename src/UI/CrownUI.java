@@ -3,8 +3,6 @@ package UI;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.util.Objects;
 
 // a unique crown image used in dominos
 final class CrownUI {

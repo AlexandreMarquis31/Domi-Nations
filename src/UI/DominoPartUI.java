@@ -5,7 +5,7 @@ import game.DominoPart;
 import javax.swing.*;
 import java.awt.*;
 
-public class DominoPartUI extends JPanel {
+class DominoPartUI extends JPanel {
     DominoPart dominoPart;
 
     DominoPartUI(DominoPart part) {

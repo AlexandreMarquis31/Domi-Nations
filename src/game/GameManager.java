@@ -2,7 +2,6 @@ package game;
 
 import UI.Application;
 import UI.GraphicsManager;
-import javafx.util.Pair;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,14 +20,14 @@ public class GameManager {
     }
 
     public static ArrayList<Player> listPlayers = new ArrayList<>();
-    private ArrayList<Player> listKings = new ArrayList<>();
+    private final ArrayList<Player> listKings = new ArrayList<>();
     private List<Domino> listDominos = new ArrayList<>();
     private List<Domino> selectableDominos;
     private ArrayList<Domino> selectedDominos;
     public static EnumSet<Rule> specialRules;
     private int totalKings;
-    private GraphicsManager gManager;
-    private boolean ligne = false;
+    private final GraphicsManager gManager;
+    private boolean line = false;
     public Player currentPlayer = null;
     public Domino currentDomino = null;
     public static final Object lock = new Object();
@@ -79,7 +78,7 @@ public class GameManager {
             GraphicsManager.sizePart = 30;
         }
         if (rules.contains(Rule.DYNASTY)) {
-            Application.getInstance().manches = 3;
+            Application.getInstance().turns = 3;
         }
         Collections.shuffle(listDominos);
         listPlayers = list;
@@ -100,8 +99,8 @@ public class GameManager {
     }
 
     private void start() {
-        newLineDominos(ligne ? 1 : 0);
-        ligne = !ligne;
+        newLineDominos(line ? 1 : 0);
+        line = !line;
         for (Player player : listKings) {
             currentPlayer = player;
             gManager.setCurrentPlayer(player);
@@ -117,7 +116,7 @@ public class GameManager {
             placeDomino(domino);
         }
         for (Player player : listPlayers) {
-            player.cumuledScore += calculateScorePlayer(player);
+            player.totalScore += calculateScorePlayer(player);
         }
         gManager.showScores(listPlayers);
     }
@@ -126,8 +125,8 @@ public class GameManager {
         System.out.println(listDominos.size());
         ArrayList<Domino> dominoToPlace = new ArrayList<>(selectedDominos);
         dominoToPlace.sort(DominoComparator);
-        newLineDominos(ligne ? 1 : 0);
-        ligne = !ligne;
+        newLineDominos(line ? 1 : 0);
+        line = !line;
         selectedDominos.clear();
         for (Domino domino : dominoToPlace) {
             currentPlayer = domino.player;
@@ -137,7 +136,7 @@ public class GameManager {
     }
 
     private void chooseDomino(Player p) {
-        gManager.labelConsigne.setText("Choisissez votre Domino.");
+        gManager.labelIndications.setText("Choisissez votre Domino.");
         if (p.ia) {
             /*Player adv = null;
             if (listPlayers.size() ==2){
@@ -167,8 +166,8 @@ public class GameManager {
         gManager.setCurrentPlayer(domino.player);
         domino.player.currentState = Player.state.PLACINGDOMINO;
         currentDomino = domino;
-        gManager.labelConsigne.setText("Placez votre Domino.");
-        if (domino.player.ia){
+        gManager.labelIndications.setText("Placez votre Domino.");
+        if (domino.player.ia) {
             //ArrayList<Integer> coords = placeDominoIA(domino);
             //domino.player.board.set(coords.get(0),coords.get(1), domino.part1);
             //domino.player.board.set(coords.get(3),coords.get(2),domino.part2);
@@ -206,12 +205,12 @@ public class GameManager {
         if (specialRules.contains(Rule.MIDDLEEARTH)) {
             int minY = player.board.getMinY();
             int minX = player.board.getMinX();
-            if (player.board.get(minX + (player.board.size - 1 / 4),minY + (player.board.size - 1 / 4)).type.equals("Chateau")) {
+            if (player.board.get(minX + (player.board.size - 1 / 4), minY + (player.board.size - 1 / 4)).type.equals("Chateau")) {
                 score += 10;
             }
         }
         return score;
     }
 
-    private Comparator<Domino> DominoComparator = (Domino m1, Domino m2) -> Integer.compare(m2.number, m1.number);
+    private final Comparator<Domino> DominoComparator = (Domino m1, Domino m2) -> Integer.compare(m2.number, m1.number);
 }

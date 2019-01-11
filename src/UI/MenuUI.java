@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 public class MenuUI extends JPanel implements ActionListener {
-    private PlayerSeclectUI[] listPlayerUI = new PlayerSeclectUI[4];
-    private RulesUI rulesUI;
+    private final PlayerSelectUI[] listPlayerUI = new PlayerSelectUI[4];
+    private final RulesUI rulesUI;
 
     public MenuUI(int width, int height) {
-        Application.getInstance().manches = 1;
+        Application.getInstance().turns = 1;
         setSize(new Dimension(width, height));
         setLayout(null);
         JLabel titre = new JLabel("Domi-Nations");
@@ -24,7 +24,7 @@ public class MenuUI extends JPanel implements ActionListener {
         titre.setFont(new Font("New Time Roman", Font.PLAIN, 40));
         add(titre);
         for (int i = 0; i < 4; i++) {
-            PlayerSeclectUI playerUI = new PlayerSeclectUI(i + 1, 180, 300);
+            PlayerSelectUI playerUI = new PlayerSelectUI(i + 1, 180, 300);
             playerUI.setLocation(10 + (i * (playerUI.getWidth() + 20)), 140);
             listPlayerUI[i] = playerUI;
             add(playerUI);
@@ -46,7 +46,7 @@ public class MenuUI extends JPanel implements ActionListener {
         Application.getInstance().setGM(graphics);
         Thread thread = new Thread(() -> {
             ArrayList<Player> playerList = new ArrayList<>();
-            for (PlayerSeclectUI playerUI : listPlayerUI) {
+            for (PlayerSelectUI playerUI : listPlayerUI) {
                 if (playerUI.selected) {
                     javafx.scene.paint.Color color = playerUI.colorField.getValue();
                     Player player = new Player(playerUI.nameField.getText(), new Color((float) color.getRed(),
@@ -63,8 +63,8 @@ public class MenuUI extends JPanel implements ActionListener {
             if (rulesUI.middleEarthSwitch.isSelected()) rules.add(GameManager.Rule.MIDDLEEARTH);
             if (rulesUI.duelSwitch.isSelected()) rules.add(GameManager.Rule.DUEL);
             GameManager game = new GameManager(graphics);
-            if (Application.getInstance().manches > 1) {
-                Application.getInstance().manches--;
+            if (Application.getInstance().turns > 1) {
+                Application.getInstance().turns--;
             }
             game.newGame(playerList, rules);
         });

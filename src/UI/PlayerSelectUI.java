@@ -10,14 +10,14 @@ import javax.swing.*;
 import java.awt.*;
 
 
-class PlayerSeclectUI extends JPanel {
-    JToggleButton playerSwitch = new JToggleButton("Désactivé");
+class PlayerSelectUI extends JPanel {
+    private final JToggleButton playerSwitch = new JToggleButton("Désactivé");
     boolean selected = false;
-    JRadioButton IASwitch = new JRadioButton("Utiliser une IA");
-    JTextField nameField;
+    final JRadioButton IASwitch = new JRadioButton("Utiliser une IA");
+    final JTextField nameField;
     ColorPicker colorField;
 
-    PlayerSeclectUI(int num, int width, int height) {
+    PlayerSelectUI(int num, int width, int height) {
         setLayout(null);
         setSize(width, height);
         JLabel titre = new JLabel("Joueur " + num);

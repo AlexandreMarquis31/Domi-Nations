@@ -1,8 +1,8 @@
 package game;
 
 public class DominoPart {
-    public int crown;
-    public String type;
+    public final int crown;
+    public final String type;
     boolean counted = false;
 
     DominoPart(String type, int crown) {
