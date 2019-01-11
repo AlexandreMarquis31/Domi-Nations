@@ -487,6 +487,9 @@ public class GameManager {
         for (int k = 0; k < selectedDominosRestants.size(); k++) {
             pickOrder.add(selectedDominosRestants.get(k).player);
         }
+        if(selectedDominos.size()==0){
+            pickOrder = new ArrayList<>(listKings);
+        }
         return pickOrder;
     }
 
