@@ -1,14 +1,14 @@
 package UI;
 
-import game.dominoPart;
+import game.DominoPart;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class DominoPartUI extends JPanel {
-    dominoPart dominoPart;
+    DominoPart dominoPart;
 
-    DominoPartUI(dominoPart part) {
+    DominoPartUI(DominoPart part) {
         dominoPart = part;
     }
 
