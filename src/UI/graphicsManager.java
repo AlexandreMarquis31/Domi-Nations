@@ -1,115 +1,167 @@
 package UI;
 
+import game.domino;
+import game.gameManager;
+import game.player;
+
 import javax.swing.*;
-import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferStrategy;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import game.domino;
-import player.player;
 
 
 public class graphicsManager extends JPanel implements ActionListener {
-    public int width = 800;
-    public int height = 700;
-    public ArrayList<player> listPlayers = new ArrayList<player>();
-    public List<domino> selectableDominos = Arrays.asList(new domino[3]);
-    public JFrame f = new JFrame("DomiNation");
-    public JLabel currentPlayer = new JLabel("         ");
+    private JLabel currentPlayerLabel = new JLabel("         ");
+    public JLabel labelConsigne = new JLabel("   Choisissez un domino.   ");
+    public static int sizePart = 30;
 
-    public graphicsManager() {
-        this.setLayout(null);
-        this.setBackground(Color.black);
+    graphicsManager(int width, int height) {
+        KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+        ActionListener actionListener = actionEvent -> System.exit(0);
+        registerKeyboardAction(actionListener, stroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
+        setLayout(null);
+        setBackground(Color.black);
         JPanel annonceUI = new JPanel();
         annonceUI.setBackground(Color.orange);
-        JLabel label = new JLabel("     Au tour de :     ", SwingConstants.CENTER);
+        JLabel label = new JLabel("     Au tour de :     ");
         label.setForeground(Color.white);
-        label.setVerticalAlignment(JLabel.TOP);
-        currentPlayer.setForeground(Color.white);
+        currentPlayerLabel.setForeground(Color.white);
         annonceUI.setBounds(width / 2 - 58, 0, 116, 50);
         annonceUI.add(label);
-        annonceUI.add(currentPlayer);
-        this.add(annonceUI);
-
-
-
-    }
-    public void startGraphics(){
-        f.setContentPane(this); //adds the main content to the frame
-        f.setResizable(false);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setAlwaysOnTop(false);
-        f.setSize(new Dimension(width, height));
-        f.setLayout(null);
-        //f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Already there
-        //f.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        f.setUndecorated(true);
-        f.setVisible(true);
-        Timer t = new Timer(30,this);
-        t.start();
+        annonceUI.add(currentPlayerLabel);
+        add(annonceUI);
+        JPanel consigneUI = new JPanel();
+        consigneUI.setBackground(Color.orange);
+        labelConsigne.setForeground(Color.white);
+        consigneUI.setBounds(width / 2 - 84, 70, 166, 28);
+        consigneUI.add(labelConsigne);
+        add(consigneUI);
+        TrashUI trash = new TrashUI();
+        trash.setBounds(width / 2 - 54, height - 50, 116, 50);
+        add(trash);
     }
 
-    public void setListPlayers(ArrayList<player> listPlayers) {
-        System.out.println(listPlayers);
-        this.listPlayers = listPlayers;
-        if (listPlayers.size() > 0) {
-            PlayerUI pleyerUI = new PlayerUI(listPlayers.get(0));
-            pleyerUI.setBounds(0, 0, pleyerUI.width, pleyerUI.height);
-            this.add(pleyerUI);
+    public void setPlayersUI(ArrayList<player> list) {
+        if (list.size() > 0) {
+            PlayerUI playerUI = new PlayerUI(list.get(0), sizePart);
+            playerUI.setBounds(0, 0, playerUI.getWidth(), playerUI.getHeight());
+            add(playerUI);
         }
-        if (listPlayers.size() > 1) {
-            PlayerUI pleyerUI2 = new PlayerUI(listPlayers.get(1));
-            pleyerUI2.setBounds(width - pleyerUI2.width, 0, pleyerUI2.width, pleyerUI2.height);
-            this.add(pleyerUI2);
+        if (list.size() > 1) {
+            PlayerUI playerUI2 = new PlayerUI(list.get(1), sizePart);
+            playerUI2.setBounds(getWidth() - playerUI2.getWidth(), 0, playerUI2.getWidth(), playerUI2.getHeight());
+            add(playerUI2);
         }
-        if (listPlayers.size() > 2) {
-            PlayerUI pleyerUI3 = new PlayerUI(listPlayers.get(2));
-            pleyerUI3.setBounds(0, height - pleyerUI3.height, pleyerUI3.width, pleyerUI3.height);
-            this.add(pleyerUI3);
+        if (list.size() > 2) {
+            PlayerUI playerUI3 = new PlayerUI(list.get(2), sizePart);
+            playerUI3.setBounds(0, getHeight() - playerUI3.getHeight(), playerUI3.getWidth(), playerUI3.getHeight());
+            add(playerUI3);
         }
-        if (listPlayers.size() > 3) {
-            PlayerUI pleyerUI4 = new PlayerUI(listPlayers.get(3));
-            pleyerUI4.setBounds(width - pleyerUI4.width, height - pleyerUI4.height, pleyerUI4.width, pleyerUI4.height);
-            this.add(pleyerUI4);
+        if (list.size() > 3) {
+            PlayerUI playerUI4 = new PlayerUI(list.get(3), sizePart);
+            playerUI4.setBounds(getWidth() - playerUI4.getWidth(), getHeight() - playerUI4.getHeight(), playerUI4.getWidth(), playerUI4.getHeight());
+            add(playerUI4);
         }
+        Runtime runtime = Runtime.getRuntime();
+        runtime.gc();
+        long memory = runtime.totalMemory() - runtime.freeMemory();
+        System.out.println(memory);
     }
 
-    public void setSelectableDominos(List<domino> list) {
+    public void newLineDominos(gameManager game, List<domino> list, int n) {
         for (domino domino : list) {
-            DominoUI dominoUI = new DominoUI(domino);
-            dominoUI.setBounds(width / 2 - dominoUI.width - 2, (height - (list.size() * (10 + dominoUI.height))) / 2 + list.indexOf(domino) * (10 + dominoUI.height), dominoUI.width, dominoUI.height);
-            this.add(dominoUI);
+            domino.turnPriority = list.indexOf(domino);
+            int x = getWidth() / 2 - (2 * sizePart + 4) - 10 + n * (2 * sizePart + 4 + 10);
+            int y = 120 + list.indexOf(domino) * (10 + 40 + (sizePart + 2));
+            DominoUI dominoUI = new DominoUI(domino, x, y, this, game);
+            dominoUI.originalX = x;
+            dominoUI.originalY = y;
+            add(dominoUI);
+            setComponentZOrder(dominoUI, 0);
         }
     }
-    public void render(Graphics g){
-        /*BufferStrategy bs = f.getBufferStrategy();
-        if(bs == null){
-            f.createBufferStrategy(3);
+
+    public void setCurrentPlayer(player player) {
+        currentPlayerLabel.setText(player.name);
+        currentPlayerLabel.setForeground(player.color);
+    }
+
+    public void showScores(ArrayList<player> list) {
+        JPanel scorePanel = new JPanel(new GridBagLayout());
+        scorePanel.setBackground(Color.orange);
+        scorePanel.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 - getWidth() / 8, getWidth() / 4, getHeight() / 3);
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 2;
+        JLabel score = new JLabel("Scores");
+        score.setFont(new Font("Time New Roman", Font.PLAIN, 30));
+        scorePanel.add(score, c);
+        int i = 0;
+        for (player player : list) {
+            JLabel label = new JLabel(player.name);
+            label.setFont(new Font("Time New Roman", Font.PLAIN, 20));
+            GridBagConstraints c1 = new GridBagConstraints();
+            c1.gridx = 0;
+            scorePanel.add(label, c1);
+            JLabel s = new JLabel(String.valueOf(player.cumuledScore));
+            s.setFont(new Font("Time New Roman", Font.PLAIN, 20));
+            GridBagConstraints c2 = new GridBagConstraints();
+            c2.gridx = 1;
+            scorePanel.add(s, c2);
+            i++;
         }
-        g = bs.getDrawGraphics();
-
-           //code here for draw
-
-        g.dispose();
-        bs.show();*/
+        String butLabel = "Rejouer";
+        if (Application.getInstance().manches > 1) {
+            butLabel = "Prochaine Manche";
+        }
+        JButton button = new JButton(butLabel);
+        button.addActionListener(this);
+        GridBagConstraints c1 = new GridBagConstraints();
+        c1.gridx = 0;
+        c1.gridwidth = 2;
+        scorePanel.add(button, c1);
+        JButton buttonMenu = new JButton("Menu Principal");
+        buttonMenu.addActionListener(this);
+        scorePanel.add(buttonMenu, c1);
+        add(scorePanel);
+        scorePanel.validate();
     }
-    public void update(Graphics g){
 
-    }
-    public void paintComponent(Graphics g) {
-        update(g);
-        render(g);
-    }
     @Override
-    public void actionPerformed(ActionEvent e){
-        repaint();
+    //used when a button has been pressed on the scores pane
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals("Menu Principal")) {
+            //go back to the menu
+            MenuUI menu = new MenuUI(getWidth(), getHeight());
+            Application.getInstance().setGM(menu);
+        } else {
+            Thread thread = new Thread() {
+                public void run() {
+                    //create another game with the sames players
+                    graphicsManager graphics = new graphicsManager(getWidth(), getHeight());
+                    Application.getInstance().setGM(graphics);
+                    gameManager game = new gameManager(graphics);
+                    if (Application.getInstance().manches > 1) {
+                        Application.getInstance().manches--;
+                        for (player player : gameManager.listPlayers) {
+                            player.newBoard(player.size);
+                        }
+                    } else {
+                        ArrayList<player> newListPlayers = new ArrayList<>();
+                        for (player player : gameManager.listPlayers) {
+                            newListPlayers.add(new player(player.name, player.color));
+                        }
+                        gameManager.listPlayers = newListPlayers;
+                    }
+                    gameManager.specialRules.remove(gameManager.Rule.DYNASTY);
+                    game.newGame(gameManager.listPlayers, gameManager.specialRules);
+                }
+            };
+            thread.start();
+        }
     }
-
-
 }
