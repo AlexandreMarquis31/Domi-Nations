@@ -15,6 +15,17 @@ public class Board {
         }
         set((num - 1) / 2,(num - 1) / 2, new DominoPart("Chateau", 0));
     }
+    public int getMin(boolean isX){
+        int min = 0;
+        for (int i = size - 1; i >= 0; i--) {
+            for (int k = 0; k < size; k++) {
+                if (!get(i,k).type.equals("vide")) {
+                    min = i;
+                }
+            }
+        }
+        return min;
+    }
     public int getMinX(){
         int minX = 0;
         for (int i = size - 1; i >= 0; i--) {
