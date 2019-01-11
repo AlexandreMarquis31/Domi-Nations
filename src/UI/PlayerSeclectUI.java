@@ -40,7 +40,6 @@ class PlayerSeclectUI extends JPanel {
         fxPanel.setBackground(Color.red);
         fxPanel.setBounds(width / 8, 17 * height / 32, width * 6 / 8, 2 * height / 20);
         add(fxPanel);
-
         Platform.runLater(() -> {
             Group root = new Group();
             Scene scene = new Scene(root);
@@ -64,6 +63,7 @@ class PlayerSeclectUI extends JPanel {
             }
             root.getChildren().add(colorField);
             fxPanel.setScene(scene);
+            fxPanel.repaint();
         });
         IASwitch.setBounds(width / 8, 23 * height / 32, 6 * width / 8, height / 8);
         add(IASwitch);

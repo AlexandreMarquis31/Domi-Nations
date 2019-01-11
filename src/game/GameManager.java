@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.*;
 
 public class GameManager {
@@ -42,7 +44,9 @@ public class GameManager {
         String line;
         String cvsSplitBy = ",";
         try {
-            br = new BufferedReader(new FileReader(new File(GameManager.class.getClassLoader().getResource("dominos.csv").getPath())));
+            URL resource = ClassLoader.getSystemResource("dominos.csv");
+            String configPath = URLDecoder.decode(resource.getFile(), "UTF-8");
+            br = new BufferedReader(new FileReader(new File(configPath)));
             br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] infos = line.split(cvsSplitBy);
