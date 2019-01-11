@@ -10,7 +10,7 @@ public class Main {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 Application app = new Application("Domi-Nations");
-                MenuUI menu = new MenuUI(800,700);
+                MenuUI menu = new MenuUI(app.getWidth(),app.getHeight());
                 app.setGM(menu);
             }
         });
