@@ -45,8 +45,8 @@ public class GameManager {
         String cvsSplitBy = ",";
         try {
             URL resource = ClassLoader.getSystemResource("dominos.csv");
-            String configPath = URLDecoder.decode(resource.getFile(), "UTF-8");
-            br = new BufferedReader(new FileReader(new File(configPath)));
+            String dominoPath = URLDecoder.decode(resource.getFile(), "UTF-8");
+            br = new BufferedReader(new FileReader(new File(dominoPath)));
             br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] infos = line.split(cvsSplitBy);

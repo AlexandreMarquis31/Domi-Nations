@@ -22,8 +22,8 @@ public class Application extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setAlwaysOnTop(false);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        double width = screenSize.getWidth();
-        double height = screenSize.getHeight();
+        double height = screenSize.getHeight()-100;
+        double width = height+100;
         setVisible(true);
         setSize(new Dimension((int)width, (int)height + getInsets().top));
         Timer t = new Timer(30, this);
