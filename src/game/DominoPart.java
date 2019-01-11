@@ -1,11 +1,11 @@
 package game;
 
-public class dominoPart {
+public class DominoPart {
     public int crown;
     public String type;
     boolean counted = false;
 
-    dominoPart(String type, int crown) {
+    DominoPart(String type, int crown) {
         this.type = type;
         this.crown = crown;
     }

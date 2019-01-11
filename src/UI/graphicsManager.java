@@ -1,6 +1,6 @@
 package UI;
 
-import game.domino;
+import game.Domino;
 import game.gameManager;
 import game.player;
 
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class graphicsManager extends JPanel implements ActionListener {
     private JLabel currentPlayerLabel = new JLabel("         ");
-    public JLabel labelConsigne = new JLabel("   Choisissez un domino.   ");
+    public JLabel labelConsigne = new JLabel("   Choisissez un Domino.   ");
     public static int sizePart = 30;
 
     graphicsManager(int width, int height) {
@@ -71,8 +71,8 @@ public class graphicsManager extends JPanel implements ActionListener {
         System.out.println(memory);
     }
 
-    public void newLineDominos(gameManager game, List<domino> list, int n) {
-        for (domino domino : list) {
+    public void newLineDominos(gameManager game, List<Domino> list, int n) {
+        for (Domino domino : list) {
             domino.turnPriority = list.indexOf(domino);
             int x = getWidth() / 2 - (2 * sizePart + 4) - 10 + n * (2 * sizePart + 4 + 10);
             int y = 120 + list.indexOf(domino) * (10 + 40 + (sizePart + 2));

@@ -11,7 +11,7 @@ public class player {
     public Color color;
     public String name;
     public state currentState = state.IDLE;
-    public dominoPart[][] board;
+    public DominoPart[][] board;
     public int cumuledScore = 0;
     public boolean litter = false;
     public boolean ia = false;
@@ -27,8 +27,8 @@ public class player {
     }
 
     public void showBoard() {
-        for (dominoPart[] dominoParts : board) {
-            for (dominoPart dominoPart : dominoParts) {
+        for (DominoPart[] dominoParts : board) {
+            for (DominoPart dominoPart : dominoParts) {
                 System.out.print(dominoPart);
             }
             System.out.println();
@@ -40,12 +40,12 @@ public class player {
         litter = false;
         currentState = state.IDLE;
         size = num;
-        board = new dominoPart[num][num];
+        board = new DominoPart[num][num];
         for (int i = 0; i < num; i++) {
             for (int k = 0; k < num; k++) {
-                board[i][k] = new dominoPart("vide", 0);
+                board[i][k] = new DominoPart("vide", 0);
             }
         }
-        board[(num - 1) / 2][(num - 1) / 2] = new dominoPart("Chateau", 0);
+        board[(num - 1) / 2][(num - 1) / 2] = new DominoPart("Chateau", 0);
     }
 }

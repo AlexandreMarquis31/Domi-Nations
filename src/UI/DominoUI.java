@@ -1,6 +1,6 @@
 package UI;
 
-import game.domino;
+import game.Domino;
 import game.gameManager;
 import game.player;
 
@@ -13,7 +13,7 @@ import java.awt.event.MouseEvent;
 
 
 public class DominoUI extends JPanel implements KeyListener {
-    public domino domino;
+    public Domino domino;
     private DominoPartUI do1;
     private DominoPartUI do2;
     int originalX = 0;
@@ -21,7 +21,7 @@ public class DominoUI extends JPanel implements KeyListener {
     private gameManager game;
     private JPanel selectedMark = new JPanel();
 
-    DominoUI(domino d, int x, int y, graphicsManager gManager, gameManager g) {
+    DominoUI(Domino d, int x, int y, graphicsManager gManager, gameManager g) {
         addKeyListener(this);
         domino = d;
         game = g;
@@ -48,7 +48,7 @@ public class DominoUI extends JPanel implements KeyListener {
             int clickY = 0;
 
             @Override
-            //used to select allow player to select domino
+            //used to select allow player to select Domino
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 e.getComponent().setFocusable(true);
@@ -60,21 +60,21 @@ public class DominoUI extends JPanel implements KeyListener {
                     game.currentDomino = ((DominoUI) e.getComponent()).domino;
                     synchronized (gameManager.lock) {
                         game.currentPlayer.currentState = player.state.DOMINOSELECTED;
-                        //notify the game manager that the domino was successfully selected
+                        //notify the game manager that the Domino was successfully selected
                         gameManager.lock.notify();
                     }
                 }
             }
 
             @Override
-            //used when the player want to place a domino
+            //used when the player want to place a Domino
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
                 e.getComponent().setFocusable(false);
                 int x = e.getX() + e.getComponent().getX();
                 int y = e.getY() + e.getComponent().getY();
                 for (Component comp : gManager.getComponents()) {
-                    // used when the player want to put the domino in the trash can
+                    // used when the player want to put the Domino in the trash can
                     if (comp instanceof TrashUI) {
                         if (x < comp.getX() + comp.getWidth() && y < comp.getY() + comp.getHeight() && x > comp.getX() && y > comp.getY()) {
                             synchronized (gameManager.lock) {
@@ -86,7 +86,7 @@ public class DominoUI extends JPanel implements KeyListener {
                         }
                     }
                     if (comp instanceof PlayerUI) {
-                        //verify that the player is placing the domino on the correct board
+                        //verify that the player is placing the Domino on the correct board
                         if (x < comp.getX() + comp.getWidth() && y < comp.getY() + comp.getHeight() && x > comp.getX() && y > comp.getY() && ((PlayerUI) comp).player == game.currentPlayer) {
                             Rectangle rec1 = new Rectangle(((DominoUI) e.getComponent()).do1.getX() + e.getComponent().getX(), ((DominoUI) e.getComponent()).do1.getY() + e.getComponent().getY(), gManager.sizePart, gManager.sizePart);
                             Rectangle rec2 = new Rectangle(((DominoUI) e.getComponent()).do2.getX() + e.getComponent().getX(), ((DominoUI) e.getComponent()).do2.getY() + e.getComponent().getY(), gManager.sizePart, gManager.sizePart);
@@ -110,13 +110,13 @@ public class DominoUI extends JPanel implements KeyListener {
                                     }
                                 }
                             }
-                            //place the domino if it can be placed
+                            //place the Domino if it can be placed
                             if ((((DominoUI) e.getComponent()).domino.canBePlaced(x1, y1, x2, y2, game.currentPlayer.board))) {
                                 game.currentPlayer.board[y1][x1] = ((DominoUI) e.getComponent()).do1.dominoPart;
                                 game.currentPlayer.board[y2][x2] = ((DominoUI) e.getComponent()).do2.dominoPart;
                                 synchronized (gameManager.lock) {
                                     game.currentPlayer.currentState = player.state.IDLE;
-                                    //notify the game manager that the domino has been placed
+                                    //notify the game manager that the Domino has been placed
                                     gameManager.lock.notify();
                                 }
                                 gManager.remove(e.getComponent());
@@ -124,13 +124,13 @@ public class DominoUI extends JPanel implements KeyListener {
                         }
                     }
                 }
-                // move the domino back to its original place if it cant be placed
+                // move the Domino back to its original place if it cant be placed
                 DominoUI d = (DominoUI) e.getComponent();
                 d.setLocation(d.originalX, d.originalY);
             }
 
             @Override
-            //move the domino
+            //move the Domino
             public void mouseDragged(MouseEvent e) {
                 super.mouseDragged(e);
                 if (game.currentPlayer.currentState == player.state.PLACINGDOMINO && game.currentPlayer == domino.player && game.currentDomino == domino) {
@@ -194,7 +194,7 @@ public class DominoUI extends JPanel implements KeyListener {
         setSize(new Dimension(getHeight(), getWidth()));
     }
 
-    //used to rotate the domino
+    //used to rotate the Domino
     public void keyPressed(KeyEvent e) {
         if (domino.player == game.currentPlayer && domino.player.currentState == player.state.PLACINGDOMINO && domino == game.currentDomino) {
             if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {

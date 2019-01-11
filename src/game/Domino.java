@@ -1,19 +1,19 @@
 package game;
 
-public class domino {
+public class Domino {
     int number;
-    public dominoPart part1;
-    public dominoPart part2;
+    public DominoPart part1;
+    public DominoPart part2;
     public int turnPriority;
     public player player = null;
 
-    domino(dominoPart part1, dominoPart part2, int num) {
+    Domino(DominoPart part1, DominoPart part2, int num) {
         this.number = num;
         this.part1 = part1;
         this.part2 = part2;
     }
 
-    public boolean canBePlaced(int x1, int y1, int x2, int y2, dominoPart[][] board) {
+    public boolean canBePlaced(int x1, int y1, int x2, int y2, DominoPart[][] board) {
         if (x1 < 0 || x2 < 0 || y1 < 0 || y2 < 0 || y1 > board.length || y2 > board.length || x1 > board[0].length || x2 > board[0].length) {
             return false;
         }
@@ -29,12 +29,12 @@ public class domino {
         return true;
     }
 
-    private boolean sameTypeArounds(int x1, int y1, int x2, int y2, dominoPart[][] board) {
+    private boolean sameTypeArounds(int x1, int y1, int x2, int y2, DominoPart[][] board) {
         return sameTypePart(x2, y2, board, part2) || (sameTypePart(x1, y1, board, part1));
     }
 
     //verify that a same part is around the position given on the board
-    private boolean sameTypePart(int x, int y, dominoPart[][] board, dominoPart part) {
+    private boolean sameTypePart(int x, int y, DominoPart[][] board, DominoPart part) {
         if (y + 1 < board.length && (board[y + 1][x].type.equals(part.type) || board[y + 1][x].type.equals("Chateau"))) {
             return true;
         }
@@ -51,7 +51,7 @@ public class domino {
     }
 
     //verify that a news dominoParts a the 2 positions will not be out of the rule's board boundaries
-    static boolean biggerThanBoard(int x1, int y1, int x2, int y2, dominoPart[][] board) {
+    static boolean biggerThanBoard(int x1, int y1, int x2, int y2, DominoPart[][] board) {
         int minX = 0;
         int minY = 0;
         for (int i = board.length - 1; i >= 0; i--) {
@@ -62,7 +62,7 @@ public class domino {
             }
         }
         for (int i = board.length - 1; i >= 0; i--) {
-            for (dominoPart[] dominoParts : board) {
+            for (DominoPart[] dominoParts : board) {
                 if (!dominoParts[i].type.equals("vide")) {
                     minX = i;
                 }
