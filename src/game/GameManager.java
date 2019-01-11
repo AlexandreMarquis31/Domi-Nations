@@ -1,7 +1,7 @@
 package game;
 
 import UI.Application;
-import UI.graphicsManager;
+import UI.GraphicsManager;
 import javafx.util.Pair;
 
 import java.io.BufferedReader;
@@ -10,7 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-public class gameManager {
+public class GameManager {
     public enum Rule {
         MIDDLEEARTH,
         HARMONY,
@@ -18,20 +18,20 @@ public class gameManager {
         DYNASTY
     }
 
-    public static ArrayList<player> listPlayers = new ArrayList<>();
-    private ArrayList<player> listKings = new ArrayList<>();
+    public static ArrayList<Player> listPlayers = new ArrayList<>();
+    private ArrayList<Player> listKings = new ArrayList<>();
     private List<Domino> listDominos = new ArrayList<>();
     private List<Domino> selectableDominos;
     private ArrayList<Domino> selectedDominos;
     public static EnumSet<Rule> specialRules;
     private int totalKings;
-    private graphicsManager gManager;
+    private GraphicsManager gManager;
     private boolean ligne = false;
-    public player currentPlayer = null;
+    public Player currentPlayer = null;
     public Domino currentDomino = null;
     public static final Object lock = new Object();
 
-    public gameManager(graphicsManager g) {
+    public GameManager(GraphicsManager g) {
         gManager = g;
         importDominos();
         Collections.shuffle(listDominos);
@@ -42,7 +42,7 @@ public class gameManager {
         String line;
         String cvsSplitBy = ",";
         try {
-            br = new BufferedReader(new FileReader(new File(gameManager.class.getClassLoader().getResource("dominos.csv").getPath())));
+            br = new BufferedReader(new FileReader(new File(GameManager.class.getClassLoader().getResource("dominos.csv").getPath())));
             br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] infos = line.split(cvsSplitBy);
@@ -61,18 +61,18 @@ public class gameManager {
         }
     }
 
-    public void newGame(ArrayList<player> list, EnumSet<Rule> rules) {
+    public void newGame(ArrayList<Player> list, EnumSet<Rule> rules) {
         if (rules == null) {
-            rules = EnumSet.noneOf(gameManager.Rule.class);
+            rules = EnumSet.noneOf(GameManager.Rule.class);
         }
-        if (rules.contains(gameManager.Rule.DUEL)) {
-            for (player player : list) {
+        if (rules.contains(GameManager.Rule.DUEL)) {
+            for (Player player : list) {
                 player.newBoard(13);
             }
-            graphicsManager.sizePart = 20;
+            GraphicsManager.sizePart = 20;
         } else {
             listDominos = listDominos.subList(0, (12 * (list.size())));
-            graphicsManager.sizePart = 30;
+            GraphicsManager.sizePart = 30;
         }
         if (rules.contains(Rule.DYNASTY)) {
             Application.getInstance().manches = 3;
@@ -98,7 +98,7 @@ public class gameManager {
     private void start() {
         newLineDominos(ligne ? 1 : 0);
         ligne = !ligne;
-        for (player player : listKings) {
+        for (Player player : listKings) {
             currentPlayer = player;
             gManager.setCurrentPlayer(player);
             chooseDomino(player);
@@ -112,7 +112,7 @@ public class gameManager {
             gManager.setCurrentPlayer(domino.player);
             placeDomino(domino);
         }
-        for (player player : listPlayers) {
+        for (Player player : listPlayers) {
             player.cumuledScore += calculateScorePlayer(player);
         }
         gManager.showScores(listPlayers);
@@ -132,10 +132,10 @@ public class gameManager {
         }
     }
 
-    private void chooseDomino(player p) {
+    private void chooseDomino(Player p) {
         gManager.labelConsigne.setText("Choisissez votre Domino.");
         if (p.ia) {
-            player adv = null;
+            Player adv = null;
             if (listPlayers.size() ==2){
                 if (listPlayers.get(0) == p) adv = listPlayers.get(1);
                 if (listPlayers.get(1) == p) adv = listPlayers.get(0);
@@ -146,7 +146,7 @@ public class gameManager {
             currentDomino = dominoSelect;
         } else {
             synchronized (lock) {
-                while (p.currentState != player.state.DOMINOSELECTED) {
+                while (p.currentState != Player.state.DOMINOSELECTED) {
                     try {
                         lock.wait();
                     } catch (InterruptedException e) {
@@ -155,23 +155,23 @@ public class gameManager {
                 }
             }
         }
-        p.currentState = player.state.IDLE;
+        p.currentState = Player.state.IDLE;
         selectedDominos.add(currentDomino);
     }
 
     private void placeDomino(Domino domino) {
         gManager.setCurrentPlayer(domino.player);
-        domino.player.currentState = player.state.PLACINGDOMINO;
+        domino.player.currentState = Player.state.PLACINGDOMINO;
         currentDomino = domino;
         gManager.labelConsigne.setText("Placez votre Domino.");
         if (domino.player.ia){
             ArrayList<Integer> coords = placeDominoIA(domino);
             domino.player.board[coords.get(1)][coords.get(0)] = domino.part1;
             domino.player.board[coords.get(2)][coords.get(3)] = domino.part2;
-            domino.player .currentState = player.state.IDLE;
+            domino.player .currentState = Player.state.IDLE;
         } else {
             synchronized (lock) {
-                while (domino.player.currentState != player.state.IDLE) {
+                while (domino.player.currentState != Player.state.IDLE) {
                     try {
                         lock.wait();
                     } catch (InterruptedException e) {
@@ -193,7 +193,7 @@ public class gameManager {
         }
     }
 
-    private int calculateScorePlayer(player player) {
+    private int calculateScorePlayer(Player player) {
         int score;
         score = calculateScoreBoard(player.board);
         if (specialRules.contains(Rule.HARMONY) && !player.litter) {
@@ -269,7 +269,7 @@ public class gameManager {
 
 //Fonctions pour l'IA
 
-    private ArrayList<ArrayList<Integer>> meilleuresPositionsDomino(Domino domino, player player) {
+    private ArrayList<ArrayList<Integer>> meilleuresPositionsDomino(Domino domino, Player player) {
         ArrayList<ArrayList<Integer>> meilleuresPositionsDomino = new ArrayList<>();
         ArrayList<ArrayList<Integer>> positionsAvecTrous = new ArrayList<>();
         DominoPart[][] boardCopy = new DominoPart[player.board.length][player.board.length];
@@ -332,7 +332,7 @@ public class gameManager {
     }
 
 
-    private ArrayList<ArrayList<Integer>> pointsDoublet(Domino domino1, Domino domino2, player player) {
+    private ArrayList<ArrayList<Integer>> pointsDoublet(Domino domino1, Domino domino2, Player player) {
         ArrayList<ArrayList<Integer>> positionsPossiblesDomino1 = new ArrayList<>();
         ArrayList<ArrayList<Integer>> bestPositions = new ArrayList<>();
         for (int x1 = 0; x1 < player.board.length; x1++) {
@@ -417,7 +417,7 @@ public class gameManager {
     }
 
     //cette fonction va servir à dire, pour chaque doublet de dominos, quelle sera la différence de score avec l'adversaire (il aura forcément les deux autres)
-    private ArrayList<Object[]> differenceDoubletsAvecAdversaire(player IA, player adversaire) {
+    private ArrayList<Object[]> differenceDoubletsAvecAdversaire(Player IA, Player adversaire) {
         ArrayList<Object[]> listeDifferencesDoublets = new ArrayList<>();
         for (int i = 0; i < selectableDominos.size() - 1; i++) {
             for (int j = i + 1; j < selectableDominos.size(); j++) {
@@ -451,7 +451,7 @@ public class gameManager {
 
     }
 
-    private ArrayList<Object[]> triListeDoublets(player IA, player adversaire) {
+    private ArrayList<Object[]> triListeDoublets(Player IA, Player adversaire) {
         ArrayList<Object[]> liste = differenceDoubletsAvecAdversaire(IA, adversaire);
         int i = 0;
         while (i < liste.size() - 1) {
@@ -468,9 +468,9 @@ public class gameManager {
     }
 
     //cette fonction renvoie une liste entre 1 et 4 (inclus) dominos qui restent à être joués
-    private ArrayList<player> pickOrder() {
+    private ArrayList<Player> pickOrder() {
         ArrayList<Domino> selectedDominosRestants = new ArrayList<>(selectedDominos);
-        ArrayList<player> pickOrder = new ArrayList<>();
+        ArrayList<Player> pickOrder = new ArrayList<>();
         for (int i = 0; i < selectedDominos.size(); i++) {
             for (int j = 0; j < selectableDominos.size(); j++) {
                 if (selectedDominos.get(i) == selectableDominos.get(j)) {
@@ -488,9 +488,9 @@ public class gameManager {
 
     //cette fonction renvoie le Domino à sélectionner parmi ceux restants une fois qu'on a joué son tour
     //on considère qu'on ne l'appelle que quand c'est au tour de l'IA de jouer
-    private Domino dominoSelection(player IA, player adversaire) {
+    private Domino dominoSelection(Player IA, Player adversaire) {
         ArrayList<Object[]> listeDoublets = triListeDoublets(IA, adversaire);
-        ArrayList<player> pickOrder = pickOrder();
+        ArrayList<Player> pickOrder = pickOrder();
         ArrayList<Domino> selectedDominosRestants = selectedDominos;
         List<Domino> selectableDominosRestants = new ArrayList<Domino>();
         List<Domino> selectableDominosDejaPris = new ArrayList<Domino>();
@@ -691,7 +691,7 @@ public class gameManager {
         return true;
     }
 
-    private Domino dominoSuivantSelected (player player, Domino dominoToPlace){
+    private Domino dominoSuivantSelected (Player player, Domino dominoToPlace){
         ArrayList<Domino> dominosSelectedForPlayer = new ArrayList<Domino>();
         for(int i = 0; i<selectedDominos.size() ; i++){
             if(selectedDominos.get(i).player == player){

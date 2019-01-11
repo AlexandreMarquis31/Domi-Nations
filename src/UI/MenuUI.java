@@ -1,7 +1,7 @@
 package UI;
 
-import game.gameManager;
-import game.player;
+import game.GameManager;
+import game.Player;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,14 +42,14 @@ public class MenuUI extends JPanel implements ActionListener {
     @Override
     //launch a game with the corrects parameters
     public void actionPerformed(ActionEvent e) {
-        graphicsManager graphics = new graphicsManager(getWidth(), getHeight());
+        GraphicsManager graphics = new GraphicsManager(getWidth(), getHeight());
         Application.getInstance().setGM(graphics);
         Thread thread = new Thread(() -> {
-            ArrayList<player> playerList = new ArrayList<>();
+            ArrayList<Player> playerList = new ArrayList<>();
             for (PlayerSeclectUI playerUI : listPlayerUI) {
                 if (playerUI.selected) {
                     javafx.scene.paint.Color color = playerUI.colorField.getValue();
-                    player player = new player(playerUI.nameField.getText(), new Color((float) color.getRed(),
+                    Player player = new Player(playerUI.nameField.getText(), new Color((float) color.getRed(),
                             (float) color.getGreen(),
                             (float) color.getBlue(),
                             (float) color.getOpacity()));
@@ -57,12 +57,12 @@ public class MenuUI extends JPanel implements ActionListener {
                     playerList.add(player);
                 }
             }
-            EnumSet<gameManager.Rule> rules = EnumSet.noneOf(gameManager.Rule.class);
-            if (rulesUI.dynastySwitch.isSelected()) rules.add(gameManager.Rule.DYNASTY);
-            if (rulesUI.harmonySwitch.isSelected()) rules.add(gameManager.Rule.HARMONY);
-            if (rulesUI.middleEarthSwitch.isSelected()) rules.add(gameManager.Rule.MIDDLEEARTH);
-            if (rulesUI.duelSwitch.isSelected()) rules.add(gameManager.Rule.DUEL);
-            gameManager game = new gameManager(graphics);
+            EnumSet<GameManager.Rule> rules = EnumSet.noneOf(GameManager.Rule.class);
+            if (rulesUI.dynastySwitch.isSelected()) rules.add(GameManager.Rule.DYNASTY);
+            if (rulesUI.harmonySwitch.isSelected()) rules.add(GameManager.Rule.HARMONY);
+            if (rulesUI.middleEarthSwitch.isSelected()) rules.add(GameManager.Rule.MIDDLEEARTH);
+            if (rulesUI.duelSwitch.isSelected()) rules.add(GameManager.Rule.DUEL);
+            GameManager game = new GameManager(graphics);
             if (Application.getInstance().manches > 1) {
                 Application.getInstance().manches--;
             }
