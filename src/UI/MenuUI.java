@@ -25,7 +25,7 @@ public class MenuUI extends JPanel implements ActionListener {
         add(titre);
         for (int i = 0; i < 4; i++) {
             PlayerSeclectUI playerUI = new PlayerSeclectUI(i + 1, 180, 300);
-            playerUI.setLocation(i* width/4, 140);
+            playerUI.setLocation(10 + (i * (playerUI.getWidth() + 20)), 140);
             listPlayerUI[i] = playerUI;
             add(playerUI);
         }
@@ -34,7 +34,7 @@ public class MenuUI extends JPanel implements ActionListener {
         rulesUI.setLocation(0, 460);
         add(rulesUI);
         JButton playBut = new JButton("Jouer !");
-        playBut.setBounds(width / 2 - 100, height - 100, 200, 40);
+        playBut.setBounds(width / 2 - 100, height - 80, 200, 40);
         add(playBut);
         playBut.addActionListener(this);
     }

@@ -64,10 +64,6 @@ public class GraphicsManager extends JPanel implements ActionListener {
             playerUI4.setBounds(getWidth() - playerUI4.getWidth(), getHeight() - playerUI4.getHeight(), playerUI4.getWidth(), playerUI4.getHeight());
             add(playerUI4);
         }
-        Runtime runtime = Runtime.getRuntime();
-        runtime.gc();
-        long memory = runtime.totalMemory() - runtime.freeMemory();
-        System.out.println(memory);
     }
 
     public void newLineDominos(GameManager game, List<Domino> list, int n) {
@@ -147,7 +143,7 @@ public class GraphicsManager extends JPanel implements ActionListener {
                     if (Application.getInstance().manches > 1) {
                         Application.getInstance().manches--;
                         for (Player player : GameManager.listPlayers) {
-                            player.newBoard(player.size);
+                            player.newBoard(player.board.size);
                         }
                     } else {
                         ArrayList<Player> newListPlayers = new ArrayList<>();

@@ -13,13 +13,13 @@ public class PlayerUI extends JPanel {
     PlayerUI(Player p, int s) {
         player = p;
         sizePart = s;
-        boardUI = new DominoPartUI[p.size][p.size];
-        setSize(p.size * (s + 2) + 2, p.size * (s + 2) + 2 + 30);
+        boardUI = new DominoPartUI[p.board.size][p.board.size];
+        setSize(p.board.size * (s + 2) + 2, p.board.size * (s + 2) + 2 + 30);
         setLayout(null);
         setBackground(Color.orange);
-        for (int i = 0; i < p.board.length; i++) {
-            for (int k = 0; k < p.board[i].length; k++) {
-                boardUI[k][i] = new DominoPartUI(p.board[k][i]);
+        for (int i = 0; i < p.board.size; i++) {
+            for (int k = 0; k < p.board.size; k++) {
+                boardUI[k][i] = new DominoPartUI(p.board.get(i,k));
                 boardUI[k][i].setBounds((i * (s + 2)) + 2, (k * (s + 2)) + 2, s, s);
                 add(boardUI[k][i]);
             }
@@ -36,9 +36,9 @@ public class PlayerUI extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (int i = 0; i < player.board.length; i++) {
-            for (int k = 0; k < player.board[i].length; k++) {
-                boardUI[k][i].dominoPart = player.board[k][i];
+        for (int i = 0; i < player.board.size; i++) {
+            for (int k = 0; k < player.board.size; k++) {
+                boardUI[k][i].dominoPart = player.board.get(i,k);
             }
         }
     }

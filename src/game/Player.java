@@ -7,11 +7,10 @@ public class Player {
         IDLE, DOMINOSELECTED, PLACINGDOMINO
     }
 
-    public int size;
     public Color color;
     public String name;
     public state currentState = state.IDLE;
-    public DominoPart[][] board;
+    public Board board;
     public int cumuledScore = 0;
     public boolean litter = false;
     public boolean ia = false;
@@ -26,26 +25,16 @@ public class Player {
         return "[" + name + "-" + color + "]";
     }
 
-    public void showBoard() {
-        for (DominoPart[] dominoParts : board) {
-            for (DominoPart dominoPart : dominoParts) {
-                System.out.print(dominoPart);
-            }
-            System.out.println();
-        }
-    }
-
     //initialize the board and the games dependants values
     public void newBoard(int num) {
         litter = false;
         currentState = state.IDLE;
-        size = num;
-        board = new DominoPart[num][num];
+        board = new Board(num);
         for (int i = 0; i < num; i++) {
             for (int k = 0; k < num; k++) {
-                board[i][k] = new DominoPart("vide", 0);
+                board.set(k,i,new DominoPart("vide", 0));
             }
         }
-        board[(num - 1) / 2][(num - 1) / 2] = new DominoPart("Chateau", 0);
+        board.set((num - 1) / 2,(num - 1) / 2 , new DominoPart("Chateau", 0));
     }
 }

@@ -97,8 +97,8 @@ public class DominoUI extends JPanel implements KeyListener {
                             int y2 = 1000;
                             float air = ((DominoUI) e.getComponent()).do1.getWidth() * ((DominoUI) e.getComponent()).do1.getHeight();
                             // get the x and y values of the dominos part representation on the board
-                            for (int i = 0; i < ((PlayerUI) comp).player.board.length; i++) {
-                                for (int k = 0; k < ((PlayerUI) comp).player.board[i].length; k++) {
+                            for (int i = 0; i < ((PlayerUI) comp).player.board.size; i++) {
+                                for (int k = 0; k < ((PlayerUI) comp).player.board.size; k++) {
                                     Rectangle recTest = new Rectangle(((PlayerUI) comp).boardUI[k][i].getX() + comp.getX(), ((PlayerUI) comp).boardUI[k][i].getY() + comp.getY(), gManager.sizePart, gManager.sizePart);
                                     if (recTest.intersection(rec1).getHeight() * recTest.intersection(rec1).getWidth() > 0.5 * air && recTest.intersection(rec1).getWidth() > 0 && recTest.intersection(rec1).getHeight() > 0) {
                                         y1 = k;
@@ -112,8 +112,8 @@ public class DominoUI extends JPanel implements KeyListener {
                             }
                             //place the Domino if it can be placed
                             if ((((DominoUI) e.getComponent()).domino.canBePlaced(x1, y1, x2, y2, game.currentPlayer.board))) {
-                                game.currentPlayer.board[y1][x1] = ((DominoUI) e.getComponent()).do1.dominoPart;
-                                game.currentPlayer.board[y2][x2] = ((DominoUI) e.getComponent()).do2.dominoPart;
+                                game.currentPlayer.board.set(x1,y1,((DominoUI) e.getComponent()).do1.dominoPart);
+                                game.currentPlayer.board.set(x2,y2,((DominoUI) e.getComponent()).do2.dominoPart);
                                 synchronized (GameManager.lock) {
                                     game.currentPlayer.currentState = Player.state.IDLE;
                                     //notify the game manager that the Domino has been placed
