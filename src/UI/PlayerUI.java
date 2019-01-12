@@ -4,34 +4,61 @@ import game.Player;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 class PlayerUI extends JPanel {
-    private final int sizePart;
+    int sizePart;
+    int widthBorder;
     final Player player;
     final DominoPartUI[][] boardUI;
+    int place;
 
-    PlayerUI(Player p, int s) {
+    PlayerUI(Player p, int size,int border) {
         player = p;
-        sizePart = s;
+        sizePart = size;
+        widthBorder = border;
         boardUI = new DominoPartUI[p.board.size][p.board.size];
-        setSize(p.board.size * (s + 2) + 2, p.board.size * (s + 2) + 2 + 30);
         setLayout(null);
         setBackground(Color.orange);
         for (int i = 0; i < p.board.size; i++) {
             for (int k = 0; k < p.board.size; k++) {
                 boardUI[k][i] = new DominoPartUI(p.board.get(i, k));
-                boardUI[k][i].setBounds((i * (s + 2)) + 2, (k * (s + 2)) + 2, s, s);
                 add(boardUI[k][i]);
             }
         }
         JLabel label = new JLabel(p.name);
-        label.setBounds(2, getHeight() - 27, 100, 20);
         add(label);
         JPanel color = new JPanel();
         color.setBorder(BorderFactory.createLineBorder(Color.white));
         color.setBackground(p.color);
-        color.setBounds(getWidth() - 27, getHeight() - 27, 20, 20);
         add(color);
+        addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                removeComponentListener(this);
+                for (int i = 0; i < p.board.size; i++) {
+                    for (int k = 0; k < p.board.size; k++) {
+                        boardUI[k][i].setBounds((i * (sizePart + widthBorder)) + widthBorder, (k * (sizePart + widthBorder)) + widthBorder, sizePart, sizePart);
+                    }
+                }
+                label.setBounds(widthBorder, getHeight() - Application.getInstance().getHeight()/26, getWidth(), Application.getInstance().getHeight()/35);
+                color.setBounds(getWidth() - Application.getInstance().getHeight()/26, getHeight() - Application.getInstance().getHeight()/26, Application.getInstance().getHeight()/35, Application.getInstance().getHeight()/35);
+
+                setSize(p.board.size * (sizePart + widthBorder) + widthBorder, p.board.size * (sizePart + widthBorder) + widthBorder + (int)(Application.getInstance().getHeight()/23.4));
+                addComponentListener(this);
+            }
+            @Override
+            public void componentMoved(ComponentEvent e) {
+            }
+            @Override
+            public void componentShown(ComponentEvent e) {
+            }
+            @Override
+            public void componentHidden(ComponentEvent e) {
+            }
+        });
+        setSize(p.board.size * (size + border) + border, p.board.size * (size + border) + border + (int)(Application.getInstance().getHeight()/23.4));
     }
 
     public void paintComponent(Graphics g) {

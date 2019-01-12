@@ -7,9 +7,7 @@ import game.Player;
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 
 class DominoUI extends JPanel implements KeyListener {
@@ -20,29 +18,64 @@ class DominoUI extends JPanel implements KeyListener {
     int originalY = 0;
     private final GameManager game;
     private final JPanel selectedMark = new JPanel();
+    int place;
 
     DominoUI(Domino d, int x, int y, GraphicsManager gManager, GameManager g) {
         addKeyListener(this);
         domino = d;
         game = g;
-        setSize(2 * GraphicsManager.sizePart + 4, GraphicsManager.sizePart + 2);
         setLayout(null);
         setLocation(x, y);
         setBackground(Color.orange);
         do1 = new DominoPartUI(domino.part1);
-        do1.setBounds(1, 1, GraphicsManager.sizePart, GraphicsManager.sizePart);
         add(do1);
         do2 = new DominoPartUI(domino.part2);
-        do2.setBounds(GraphicsManager.sizePart + 3, 1, GraphicsManager.sizePart, GraphicsManager.sizePart);
         add(do2);
-        selectedMark.setBounds(getWidth() / 2 - GraphicsManager.sizePart / 3, getHeight() / 2 - GraphicsManager.sizePart / 3, GraphicsManager.sizePart * 2 / 3, GraphicsManager.sizePart * 2 / 3);
         selectedMark.setBorder(BorderFactory.createLineBorder(Color.white));
         selectedMark.setVisible(false);
         add(selectedMark);
         this.setComponentZOrder(selectedMark, 0);
         this.setComponentZOrder(do2, 1);
         this.setComponentZOrder(do1, 1);
+        do1.setBounds(GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2, GraphicsManager.sizePart, GraphicsManager.sizePart);
+        do2.setBounds(GraphicsManager.sizePart + 3*GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2, GraphicsManager.sizePart, GraphicsManager.sizePart);
 
+        addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                removeComponentListener(this);
+                selectedMark.setBounds(getWidth() / 2 - GraphicsManager.sizePart / 3, getHeight() / 2 - GraphicsManager.sizePart / 3, GraphicsManager.sizePart * 2 / 3, GraphicsManager.sizePart * 2 / 3);
+                do1.setSize(GraphicsManager.sizePart, GraphicsManager.sizePart);
+                do2.setSize(GraphicsManager.sizePart, GraphicsManager.sizePart);
+                if (getHeight() > getWidth()) {
+                    if (do2.getY() == GraphicsManager.widthBorder/2) {
+                        do1.setLocation(GraphicsManager.widthBorder/2, do1.getWidth() + 3*GraphicsManager.widthBorder/2 );
+                    } else {
+                        do2.setLocation(GraphicsManager.widthBorder/2, do1.getWidth()+ 3*GraphicsManager.widthBorder/2);
+                    }
+                } else {
+                    if (do2.getX() == GraphicsManager.widthBorder/2) {
+                        do1.setLocation(do1.getWidth() + 3*GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
+                    } else {
+                        do2.setLocation(do1.getWidth()+ 3*GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
+                    }
+                }
+                addComponentListener(this);
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+            }
+        });
+        setSize(2 * GraphicsManager.sizePart + GraphicsManager.widthBorder*2, GraphicsManager.sizePart + GraphicsManager.widthBorder);
         MouseInputAdapter mi = new MouseInputAdapter() {
             int clickX = 0;
             int clickY = 0;
@@ -155,18 +188,19 @@ class DominoUI extends JPanel implements KeyListener {
 
     private void rotationRight() {
         if (getHeight() > getWidth()) {
-            if (do2.getY() == 1) {
-                do2.setLocation(do1.getWidth() + 3, 1);
-                do1.setLocation(1, 1);
-            } else if (do2.getY() == do1.getWidth() + 3) {
-                do1.setLocation(do2.getWidth() + 3, 1);
-                do2.setLocation(1, 1);
+            if (do2.getY() == GraphicsManager.widthBorder/2) {
+                System.out.println("aaa");
+                do2.setLocation(do2.getWidth() + (3*GraphicsManager.widthBorder/2), GraphicsManager.widthBorder/2);
+                do1.setLocation(GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
+            } else {
+                do1.setLocation(do2.getWidth() + 3*GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
+                do2.setLocation(GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
             }
         } else {
-            if (do2.getX() == 1) {
-                do1.setLocation(1, do2.getWidth() + 3);
-            } else if (do2.getX() == do1.getWidth() + 3) {
-                do2.setLocation(1, do1.getWidth() + 3);
+            if (do2.getX() == GraphicsManager.widthBorder/2) {
+                do1.setLocation(GraphicsManager.widthBorder/2, do2.getWidth() + 3*GraphicsManager.widthBorder/2);
+            } else {
+                do2.setLocation(GraphicsManager.widthBorder/2, do1.getWidth() + 3*GraphicsManager.widthBorder/2);
             }
         }
         selectedMark.setLocation(selectedMark.getY(), selectedMark.getX());
@@ -175,19 +209,19 @@ class DominoUI extends JPanel implements KeyListener {
 
     private void rotationLeft() {
         if (getHeight() > getWidth()) {
-            if (do2.getY() == 1) {
-                do1.setLocation(do2.getWidth() + 3, 1);
+            if (do2.getY() == GraphicsManager.widthBorder/2) {
+                do1.setLocation(do2.getWidth() + 3*GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
             } else {
-                do2.setLocation(do1.getWidth() + 3, 1);
-                do1.setLocation(1, 1);
+                do2.setLocation(do1.getWidth() + 3*GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
+                do1.setLocation(GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
             }
         } else {
-            if (do2.getX() == 1) {
-                do2.setLocation(1, do1.getWidth() + 3);
-                do1.setLocation(1, 1);
+            if (do2.getX() == GraphicsManager.widthBorder/2) {
+                do2.setLocation(GraphicsManager.widthBorder/2, do1.getWidth() + 3*GraphicsManager.widthBorder/2);
+                do1.setLocation(GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
             } else {
-                do2.setLocation(1, 1);
-                do1.setLocation(1, do2.getWidth() + 3);
+                do2.setLocation(GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
+                do1.setLocation(GraphicsManager.widthBorder/2, do2.getWidth() + 3*GraphicsManager.widthBorder/2);
             }
         }
         selectedMark.setLocation(selectedMark.getY(), selectedMark.getX());

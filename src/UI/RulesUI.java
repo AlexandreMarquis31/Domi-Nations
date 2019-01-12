@@ -10,6 +10,8 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.nio.charset.Charset;
 
 class RulesUI extends JPanel implements ActionListener {
@@ -20,7 +22,6 @@ class RulesUI extends JPanel implements ActionListener {
     final JRadioButton dynastySwitch;
 
     RulesUI(int width, int height) {
-        setSize(width, height);
         setLayout(null);
         JLabel rulesLabel = new JLabel("Règles spéciales");
         rulesLabel.setFont(new Font("New Time Roman", Font.BOLD, height/10));
@@ -49,10 +50,38 @@ class RulesUI extends JPanel implements ActionListener {
         ruleDetails.setBounds(width / 2 + width / 16, (int)(height/5.4), 3 * width / 8, (int)(height/1.6));
         add(ruleDetails);
         StyledDocument doc = ruleDetails.getStyledDocument();
-        SimpleAttributeSet center = new SimpleAttributeSet();
-        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
-        SimpleAttributeSet redacted = new SimpleAttributeSet();
-        doc.setParagraphAttributes(0, 1, center, true);
+        addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                removeComponentListener(this);
+                rulesLabel.setFont(new Font("New Time Roman", Font.BOLD, getHeight()/10));
+                SimpleAttributeSet center = new SimpleAttributeSet();
+                StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+                StyleConstants.setFontSize(center, getHeight()/14);
+                SimpleAttributeSet redacted = new SimpleAttributeSet();
+                doc.setParagraphAttributes(0, doc.getLength(), center, true);
+                rulesLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                rulesLabel.setBounds(0, 0, getWidth() , getHeight()/8);
+                dynastySwitch.setBounds(getWidth()  / 32, getHeight()/3, getWidth() / 4, getHeight()/8);
+                harmonySwitch.setBounds(getWidth()  / 4 + getWidth()  / 32, getHeight()/3, getWidth()  / 4, getHeight()/8);
+                middleEarthSwitch.setBounds(getWidth()  / 32, getHeight()/2, getWidth()  / 4, getHeight()/8);
+                duelSwitch.setBounds(getWidth()  / 4 + getWidth()  / 32, getHeight()/2, getWidth()  / 4, getHeight()/8);
+                Border margin = new EmptyBorder(getHeight()/32,getWidth() /20 , getHeight()/16, getWidth() /20);
+                ruleDetails.setBorder(new CompoundBorder(BorderFactory.createLineBorder(Color.gray), margin));
+                ruleDetails.setBounds(getWidth()  / 2 + getWidth()  / 16, (int)(getHeight()/5.4), 3 * getWidth()  / 8, (int)(getHeight()/1.6));
+                addComponentListener(this);
+            }
+            @Override
+            public void componentMoved(ComponentEvent e) {
+            }
+            @Override
+            public void componentShown(ComponentEvent e) {
+            }
+            @Override
+            public void componentHidden(ComponentEvent e) {
+            }
+        });
+        setSize(width, height);
     }
 
     @Override

@@ -43,8 +43,9 @@ class DominoPartUI extends JPanel {
         if (dominoPart.crown > 0) {
             g.drawImage(CrownUI.getInstance(), getWidth() - 15, 1, null);
             g.setColor(getContrastColor(getBackground()));
-            g.setFont(new Font(" TimesRoman ", Font.PLAIN, 10));
-            g.drawChars(String.valueOf(dominoPart.crown).toCharArray(), 0, String.valueOf(dominoPart.crown).toCharArray().length, getWidth() - 8, getHeight() - 1);
+            g.setFont(new Font(" TimesRoman ", Font.PLAIN, getHeight()/3));
+            g.drawChars(String.valueOf(dominoPart.crown).toCharArray(), 0, String.valueOf(dominoPart.crown).toCharArray().length, getWidth() - (int)(getWidth()/3.5), getHeight() - 1);
+
         }
     }
 

@@ -31,11 +31,11 @@ public class Board {
         return min;
     }
 
-    public int getMinX() {
+    int getMinX() {
         return getMin(true);
     }
 
-    public int getMinY() {
+    int getMinY() {
         return getMin(false);
     }
 
@@ -48,7 +48,7 @@ public class Board {
     }
 
 
-    public int calculateScore() {
+    int calculateScore() {
         int score = 0;
         for (int i = 0; i < size; i++) {
             for (int k = 0; k < size; k++) {
@@ -89,5 +89,15 @@ public class Board {
         totalArea += newPair.getKey();
         totalCrown += newPair.getValue();
         return new Pair<>(totalArea, totalCrown);
+    }
+
+    public Board copy(){
+        Board boardCopy = new Board(size);
+        for (int i = 0; i < size; i++) {
+            for (int k = 0; k < size; k++) {
+                boardCopy.set(k, i, new DominoPart(get(k,i).type, get(k,i).crown));
+            }
+        }
+        return boardCopy;
     }
 }

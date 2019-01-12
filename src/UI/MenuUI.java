@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
@@ -16,27 +18,46 @@ public class MenuUI extends JPanel implements ActionListener {
 
     public MenuUI(int width, int height) {
         Application.getInstance().turns = 1;
-        setSize(new Dimension(width, height));
         setLayout(null);
         JLabel titre = new JLabel("Domi-Nations");
         titre.setHorizontalAlignment(SwingConstants.CENTER);
-        titre.setBounds(0, 0, width, height/5);
-        titre.setFont(new Font("New Time Roman", Font.PLAIN, height/18));
         add(titre);
         for (int i = 0; i < 4; i++) {
             PlayerSelectUI playerUI = new PlayerSelectUI(i + 1, (int)(width/4.5), (int)(height/2.5));
-            playerUI.setLocation(width/80 + (i * (playerUI.getWidth() + width/40)), height/5);
             listPlayerUI[i] = playerUI;
             add(playerUI);
         }
 
         rulesUI = new RulesUI(width, (int)(height/4.4));
-        rulesUI.setLocation(0, (int)(height/1.5));
         add(rulesUI);
         JButton playBut = new JButton("Jouer !");
-        playBut.setBounds(width / 2 - height/7, height - height/10, width/4, height/18);
         add(playBut);
         playBut.addActionListener(this);
+        addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                removeComponentListener(this);
+                titre.setBounds(0, 0, getWidth(), getHeight()/5);
+                titre.setFont(new Font("New Time Roman", Font.PLAIN, getHeight()/18));
+                for (int i = 0; i < 4; i++) {
+                    PlayerSelectUI playerUI = listPlayerUI[i] ;
+                    playerUI.setBounds(getWidth()/80 + (i * (playerUI.getWidth() + getWidth()/40)), getHeight()/5,(int)(getWidth()/4.5), (int)(getHeight()/2.5));
+                }
+                playBut.setBounds(getWidth() / 2 - getHeight()/7, getHeight() - getHeight()/10, getWidth()/4, getHeight()/18);
+                rulesUI.setBounds(0, (int)(getHeight()/1.5),getWidth(), (int)(getHeight()/4.4));
+                addComponentListener(this);
+            }
+            @Override
+            public void componentMoved(ComponentEvent e) {
+            }
+            @Override
+            public void componentShown(ComponentEvent e) {
+            }
+            @Override
+            public void componentHidden(ComponentEvent e) {
+            }
+        });
+        setSize(new Dimension(width, height));
     }
 
     @Override

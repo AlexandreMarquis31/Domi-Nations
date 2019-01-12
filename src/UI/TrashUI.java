@@ -9,7 +9,7 @@ class TrashUI extends JPanel {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         JLabel label = new JLabel("Poubelle");
-        label.setFont(new Font("Time New Roman", Font.PLAIN, 16));
+        label.setFont(new Font("Time New Roman", Font.PLAIN, Application.getInstance().getHeight()/44));
         label.setForeground(Color.white);
         add(label, gbc);
 

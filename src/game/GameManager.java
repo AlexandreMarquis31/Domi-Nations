@@ -72,10 +72,10 @@ public class GameManager {
             for (Player player : list) {
                 player.newBoard(13);
             }
-            GraphicsManager.sizePart = 20;
+            GraphicsManager.sizePart = Application.getInstance().getWidth()/40;
         } else {
             listDominos = listDominos.subList(0, (12 * (list.size())));
-            GraphicsManager.sizePart = 30;
+            GraphicsManager.sizePart = (int)(Application.getInstance().getWidth()/26.5);
         }
         if (rules.contains(Rule.DYNASTY)) {
             Application.getInstance().turns = 3;
@@ -91,6 +91,7 @@ public class GameManager {
         } else {
             listKings.addAll(listPlayers);
         }
+        listDominos = listDominos.subList(0, totalKings*1);
         selectedDominos = new ArrayList<>();
         selectableDominos = Arrays.asList(new Domino[totalKings]);
         Collections.shuffle(listKings);
@@ -109,7 +110,7 @@ public class GameManager {
         while (listDominos.size() > 0) {
             newTurn();
         }
-        selectedDominos.sort(DominoComparator);
+        selectedDominos.sort(InverseDominoComparator);
         for (Domino domino : selectedDominos) {
             currentPlayer = domino.player;
             gManager.setCurrentPlayer(domino.player);
@@ -124,7 +125,7 @@ public class GameManager {
     private void newTurn() {
         System.out.println(listDominos.size());
         ArrayList<Domino> dominoToPlace = new ArrayList<>(selectedDominos);
-        dominoToPlace.sort(DominoComparator);
+        dominoToPlace.sort(InverseDominoComparator);
         newLineDominos(line ? 1 : 0);
         line = !line;
         selectedDominos.clear();
@@ -213,4 +214,5 @@ public class GameManager {
     }
 
     private final Comparator<Domino> DominoComparator = (Domino m1, Domino m2) -> Integer.compare(m2.number, m1.number);
+    private final Comparator<Domino> InverseDominoComparator = (Domino m1, Domino m2) -> Integer.compare(m1.number, m2.number);
 }
