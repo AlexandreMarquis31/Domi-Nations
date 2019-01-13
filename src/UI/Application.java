@@ -5,8 +5,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 
 // a JFrame that will contains the game and the menu
 public class Application extends JFrame implements ActionListener {
@@ -14,7 +12,6 @@ public class Application extends JFrame implements ActionListener {
     private JPanel gM;
     private static Application instance = null;
     public MenuUI menuUI;
-    private int oldHeight;
     private Timer resisingTimer;
 
     public Application(String str) {
@@ -30,48 +27,6 @@ public class Application extends JFrame implements ActionListener {
         int width = height * 8 / 7;
         Timer t = new Timer(30, this);
         t.start();
-        /*resisingTimer= new Timer(200,new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("resize");
-                if (getWidth() != getHeight() * 8 / 7) {
-                    if (oldHeight != getHeight()) {
-                        setSize(getHeight() * 8 / 7, getHeight());
-                    } else {
-                        setSize(getWidth(), getWidth() * 7 / 8);
-                    }
-                }
-                oldHeight = getHeight();
-            }
-        });
-        resisingTimer.setRepeats(false);*/
-        oldHeight = height;
-        /*addComponentListener(new ComponentListener() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                Application app = (Application) e.getComponent();
-                if (resisingTimer.isRunning()){
-                    resisingTimer.restart();
-                } else {
-                    resisingTimer.start();
-                }
-            }
-
-            @Override
-            public void componentMoved(ComponentEvent e) {
-
-            }
-
-            @Override
-            public void componentShown(ComponentEvent e) {
-
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-
-            }
-        });*/
         setBounds(screenWidth / 2 - width / 2, screenHeight / 2 - height / 2, width, height + getInsets().top);
         setVisible(true);
     }
