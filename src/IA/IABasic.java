@@ -48,6 +48,7 @@ public class IABasic {
                 }
             }
         }
+        domino.player.litter = true;
         return false;
     }
 
