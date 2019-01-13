@@ -20,7 +20,7 @@ public class Board {
     private int getMin(boolean isX) {
         int min = 0;
         for (int i = size - 1; i >= 0; i--) {
-            for (int k = 0; k < size; k++) {
+            for (int k = size - 1; k >= 0; k--) {
                 if (isX && !get(i, k).type.equals("vide")) {
                     min = i;
                 } else if (!isX && !get(k, i).type.equals("vide")) {
@@ -32,11 +32,37 @@ public class Board {
     }
 
     int getMinX() {
+        System.out.println("min x   :"+getMin(true));
         return getMin(true);
     }
 
     int getMinY() {
+        System.out.println("min y   :"+getMin(false));
         return getMin(false);
+    }
+
+    private int getMax(boolean isX) {
+        int max = 0;
+        for (int i = 0; i < size; i++) {
+            for (int k = 0; k < size; k++) {
+                if (isX && !get(i, k).type.equals("vide")) {
+                    max = i;
+                } else if (!isX && !get(k, i).type.equals("vide")) {
+                    max = i;
+                }
+            }
+        }
+        return max;
+    }
+
+    int getMaxX() {
+        System.out.println("max x   :"+getMax(true));
+        return getMax(true);
+    }
+
+    int getMaxY() {
+        System.out.println("max y   :"+getMax(false));
+        return getMax(false);
     }
 
     public DominoPart get(int x, int y) {
@@ -55,7 +81,7 @@ public class Board {
                 if (!get(k, i).type.equals("vide") && !get(k, i).counted) {
                     Pair<Integer, Integer> pair = calculateScoreZone(get(k, i), i, k);
                     score += pair.getKey() * pair.getValue();
-                    //System.out.println(board[i][k].type + "   -   "+pair.getKey() * pair.getValue());
+                    //System.out.println(get(k, i).type + "   -   " + pair.getKey()+" : "+pair.getValue());
                 }
             }
         }
@@ -71,31 +97,37 @@ public class Board {
     private Pair<Integer, Integer> calculateScoreZone(DominoPart part, int y, int x) {
         int totalArea = 1;
         int totalCrown = part.crown;
+        //System.out.println(part + "y : "+y +"  x : "+x);
         Pair<Integer, Integer> newPair = new Pair<>(0, 0);
-        String type = part.type;
         part.counted = true;
-        if (x < array[y].length - 1 && array[y][x + 1].type.equals(type) && !array[y][x + 1].counted) {
+        if (x < array[y].length - 1 && array[y][x + 1].type.equals(part.type) && !array[y][x + 1].counted) {
             newPair = calculateScoreZone(array[y][x + 1], y, x + 1);
+            totalArea += newPair.getKey();
+            totalCrown += newPair.getValue();
         }
-        if (x > 0 && array[y][x - 1].type.equals(type) && !array[y][x - 1].counted) {
+        if (x > 0 && array[y][x - 1].type.equals(part.type) && !array[y][x - 1].counted) {
             newPair = calculateScoreZone(array[y][x - 1], y, x - 1);
+            totalArea += newPair.getKey();
+            totalCrown += newPair.getValue();
         }
-        if (y < array.length - 1 && array[y + 1][x].type.equals(type) && !array[y + 1][x].counted) {
+        if (y < array.length - 1 && array[y + 1][x].type.equals(part.type) && !array[y + 1][x].counted) {
             newPair = calculateScoreZone(array[y + 1][x], y + 1, x);
+            totalArea += newPair.getKey();
+            totalCrown += newPair.getValue();
         }
-        if (y > 0 && array[y - 1][x].type.equals(type) && !array[y - 1][x].counted) {
+        if (y > 0 && array[y - 1][x].type.equals(part.type) && !array[y - 1][x].counted) {
             newPair = calculateScoreZone(array[y - 1][x], y - 1, x);
+            totalArea += newPair.getKey();
+            totalCrown += newPair.getValue();
         }
-        totalArea += newPair.getKey();
-        totalCrown += newPair.getValue();
         return new Pair<>(totalArea, totalCrown);
     }
 
-    public Board copy(){
+    public Board copy() {
         Board boardCopy = new Board(size);
         for (int i = 0; i < size; i++) {
             for (int k = 0; k < size; k++) {
-                boardCopy.set(k, i, new DominoPart(get(k,i).type, get(k,i).crown));
+                boardCopy.set(k, i, new DominoPart(get(k, i).type, get(k, i).crown));
             }
         }
         return boardCopy;

@@ -23,12 +23,12 @@ public class MenuUI extends JPanel implements ActionListener {
         titre.setHorizontalAlignment(SwingConstants.CENTER);
         add(titre);
         for (int i = 0; i < 4; i++) {
-            PlayerSelectUI playerUI = new PlayerSelectUI(i + 1, (int)(width/4.5), (int)(height/2.5));
+            PlayerSelectUI playerUI = new PlayerSelectUI(i + 1, (int) (width / 4.5), (int) (height / 2.5));
             listPlayerUI[i] = playerUI;
             add(playerUI);
         }
 
-        rulesUI = new RulesUI(width, (int)(height/4.4));
+        rulesUI = new RulesUI(width, (int) (height / 4.4));
         add(rulesUI);
         JButton playBut = new JButton("Jouer !");
         add(playBut);
@@ -37,22 +37,25 @@ public class MenuUI extends JPanel implements ActionListener {
             @Override
             public void componentResized(ComponentEvent e) {
                 removeComponentListener(this);
-                titre.setBounds(0, 0, getWidth(), getHeight()/5);
-                titre.setFont(new Font("New Time Roman", Font.PLAIN, getHeight()/18));
+                titre.setBounds(0, 0, getWidth(), getHeight() / 5);
+                titre.setFont(new Font("New Time Roman", Font.PLAIN, getHeight() / 18));
                 for (int i = 0; i < 4; i++) {
-                    PlayerSelectUI playerUI = listPlayerUI[i] ;
-                    playerUI.setBounds(getWidth()/80 + (i * (playerUI.getWidth() + getWidth()/40)), getHeight()/5,(int)(getWidth()/4.5), (int)(getHeight()/2.5));
+                    PlayerSelectUI playerUI = listPlayerUI[i];
+                    playerUI.setBounds(getWidth() / 80 + (i * (playerUI.getWidth() + getWidth() / 40)), getHeight() / 5, (int) (getWidth() / 4.5), (int) (getHeight() / 2.5));
                 }
-                playBut.setBounds(getWidth() / 2 - getHeight()/7, getHeight() - getHeight()/10, getWidth()/4, getHeight()/18);
-                rulesUI.setBounds(0, (int)(getHeight()/1.5),getWidth(), (int)(getHeight()/4.4));
+                playBut.setBounds(getWidth() / 2 - getHeight() / 7, getHeight() - getHeight() / 10, getWidth() / 4, getHeight() / 18);
+                rulesUI.setBounds(0, (int) (getHeight() / 1.5), getWidth(), (int) (getHeight() / 4.4));
                 addComponentListener(this);
             }
+
             @Override
             public void componentMoved(ComponentEvent e) {
             }
+
             @Override
             public void componentShown(ComponentEvent e) {
             }
+
             @Override
             public void componentHidden(ComponentEvent e) {
             }

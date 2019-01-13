@@ -23,10 +23,10 @@ public class Application extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setAlwaysOnTop(false);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int screenHeight = (int)screenSize.getHeight();
-        int height = screenHeight-100;
-        int screenWidth = (int)screenSize.getWidth();
-        int width = height*8/7;
+        int screenHeight = (int) screenSize.getHeight();
+        int height = screenHeight - 100;
+        int screenWidth = (int) screenSize.getWidth();
+        int width = height * 8 / 7;
         Timer t = new Timer(30, this);
         t.start();
         oldHeight = height;
@@ -35,11 +35,11 @@ public class Application extends JFrame implements ActionListener {
             public void componentResized(ComponentEvent e) {
                 Application app = (Application) e.getComponent();
                 app.removeComponentListener(this);
-                if(app.getWidth() != app.getHeight()*8/7){
-                    if (oldHeight > app.getHeight()){
-                        app.setSize(app.getHeight()*8/7,app.getHeight());
+                if (app.getWidth() != app.getHeight() * 8 / 7) {
+                    if (oldHeight > app.getHeight()) {
+                        app.setSize(app.getHeight() * 8 / 7, app.getHeight());
                     } else {
-                        app.setSize(app.getWidth(),app.getWidth()*7/8);
+                        app.setSize(app.getWidth(), app.getWidth() * 7 / 8);
                     }
                     oldHeight = app.getHeight();
                 }
@@ -62,7 +62,7 @@ public class Application extends JFrame implements ActionListener {
 
             }
         });
-        setBounds(screenWidth/2-width/2,screenHeight/2-height/2,width, height + getInsets().top);
+        setBounds(screenWidth / 2 - width / 2, screenHeight / 2 - height / 2, width, height + getInsets().top);
         setVisible(true);
     }
 

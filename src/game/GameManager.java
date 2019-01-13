@@ -4,14 +4,15 @@ import UI.Application;
 import UI.GraphicsManager;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLDecoder;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class GameManager {
+    private BufferedReader reader;
+
     public enum Rule {
         MIDDLEEARTH,
         HARMONY,
@@ -37,15 +38,14 @@ public class GameManager {
         importDominos();
         Collections.shuffle(listDominos);
     }
-
     private void importDominos() {
         BufferedReader br = null;
         String line;
         String cvsSplitBy = ",";
         try {
-            URL resource = ClassLoader.getSystemResource("dominos.csv");
-            String dominoPath = URLDecoder.decode(resource.getFile(), "UTF-8");
-            br = new BufferedReader(new FileReader(new File(dominoPath)));
+            InputStream in = getClass().getResourceAsStream("dominos.csv");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] infos = line.split(cvsSplitBy);
@@ -91,7 +91,6 @@ public class GameManager {
         } else {
             listKings.addAll(listPlayers);
         }
-        listDominos = listDominos.subList(0, totalKings*1);
         selectedDominos = new ArrayList<>();
         selectableDominos = Arrays.asList(new Domino[totalKings]);
         Collections.shuffle(listKings);
@@ -206,7 +205,11 @@ public class GameManager {
         if (specialRules.contains(Rule.MIDDLEEARTH)) {
             int minY = player.board.getMinY();
             int minX = player.board.getMinX();
-            if (player.board.get(minX + (player.board.size - 1 / 4), minY + (player.board.size - 1 / 4)).type.equals("Chateau")) {
+            int maxY = player.board.getMaxY();
+            int maxX = player.board.getMaxX();
+            System.out.println("minX "+minX+" minY  : "+minY + "  maxX  : "+maxX+"   maxY  : "+maxY);
+            System.out.println(" x : "+(minX+maxX)/2+" y : "+(minY+maxY)/2+" type : "+player.board.get((minX+maxX)/2,(minY+maxY)/2).type);
+            if (player.board.get(((minX+maxX)/2),((minY+maxY)/2)).type.equals("Chateau")) {
                 score += 10;
             }
         }
@@ -214,5 +217,5 @@ public class GameManager {
     }
 
     private final Comparator<Domino> DominoComparator = (Domino m1, Domino m2) -> Integer.compare(m2.number, m1.number);
-    private final Comparator<Domino> InverseDominoComparator = (Domino m1, Domino m2) -> Integer.compare(m1.number, m2.number);
+    private final Comparator<Domino> InverseDominoComparator = Comparator.comparingInt((Domino m) -> m.number);
 }

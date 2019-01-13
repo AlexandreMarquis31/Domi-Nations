@@ -6,16 +6,19 @@ import game.Player;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class GraphicsManager extends JPanel implements ActionListener {
+public class GraphicsManager extends JPanel {
     private final JLabel currentPlayerLabel = new JLabel("         ");
     public final JLabel labelIndications = new JLabel("   Choisissez un Domino.   ");
     public static int sizePart = 30;
-    static int widthBorder = 2;
+    static final int widthBorder = 2;
 
     GraphicsManager(int width, int height) {
         KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
@@ -93,7 +96,7 @@ public class GraphicsManager extends JPanel implements ActionListener {
     }
 
     public void setPlayersUI(ArrayList<Player> list) {
-        PlayerUI playerUI =null ;
+        PlayerUI playerUI = null;
         for (Player player : list) {
             switch (list.indexOf(player)) {
                 case 0:
@@ -116,15 +119,15 @@ public class GraphicsManager extends JPanel implements ActionListener {
             public void componentResized(ComponentEvent e) {
                 removeComponentListener(this);
                 int k = 0;
-                for (Component comp : getComponents()){
-                    if(comp instanceof PlayerUI){
-                        if (((PlayerUI)comp).player.board.size == 13) {
+                for (Component comp : getComponents()) {
+                    if (comp instanceof PlayerUI) {
+                        if (((PlayerUI) comp).player.board.size == 13) {
                             sizePart = Application.getInstance().getWidth() / 40;
                         } else {
                             sizePart = (int) (Application.getInstance().getWidth() / 26.5);
                         }
-                        ((PlayerUI)comp).sizePart = sizePart;
-                        ((PlayerUI)comp).widthBorder = widthBorder;
+                        ((PlayerUI) comp).sizePart = sizePart;
+                        ((PlayerUI) comp).widthBorder = widthBorder;
                         switch (k) {
                             case (0):
                                 comp.setBounds(0, 0, comp.getWidth() - 1, comp.getHeight());
@@ -136,7 +139,7 @@ public class GraphicsManager extends JPanel implements ActionListener {
                                 comp.setBounds(0, getHeight() - comp.getHeight(), comp.getWidth() - 1, comp.getHeight());
                                 break;
                             case (3):
-                                comp.setBounds(getWidth() - comp.getWidth(), getHeight() - comp.getHeight() - 1, comp.getWidth(), comp.getHeight());
+                                comp.setBounds(getWidth() - comp.getWidth(), getHeight() - comp.getHeight() - 1, comp.getWidth()-1, comp.getHeight());
                                 break;
                         }
                         k++;
@@ -144,139 +147,95 @@ public class GraphicsManager extends JPanel implements ActionListener {
                 }
                 addComponentListener(this);
             }
+
             @Override
             public void componentMoved(ComponentEvent e) {
             }
+
             @Override
             public void componentShown(ComponentEvent e) {
             }
+
             @Override
             public void componentHidden(ComponentEvent e) {
             }
         });
-        setSize(getWidth()+8,getHeight()+7);
-        setSize(getWidth()-8,getHeight()-7);
+        setSize(getWidth() + 8, getHeight() + 7);
+        setSize(getWidth() - 8, getHeight() - 7);
     }
 
-        public void newLineDominos (GameManager game, List < Domino > list,int n){
-            for (Domino domino : list) {
-                int x = getWidth() / 2 - (2 * sizePart + 2 * widthBorder) - getWidth() / 80 + n * (2 * sizePart + 2 * widthBorder + getWidth() / 80);
-                int y = getHeight() / 5 + list.indexOf(domino) * (getHeight() / 20 + (2 * (sizePart + widthBorder)));
-                DominoUI dominoUI = new DominoUI(domino, x, y, this, game);
-                dominoUI.place = list.indexOf(domino);
-                dominoUI.originalX = x;
-                dominoUI.originalY = y;
-                add(dominoUI);
-                setComponentZOrder(dominoUI, 0);
-                addComponentListener(new ComponentListener() {
-                    @Override
-                    public void componentResized(ComponentEvent e) {
-                        removeComponentListener(this);
-                        int x = getWidth() / 2 - (2 * sizePart + 2 * widthBorder) - getWidth() / 80 + n * (2 * sizePart + 2 * widthBorder + getWidth() / 80);
-                        int y = getHeight() / 5 + dominoUI.place * (getHeight() / 20 + (2 * (sizePart + widthBorder)));
-                        dominoUI.setLocation(x, y);
-                        //
-                        if (dominoUI.getHeight() > dominoUI.getWidth()){
-                            dominoUI.setSize( sizePart + widthBorder,2 * sizePart + widthBorder * 2);
-                        } else {
-                            dominoUI.setSize(2 * sizePart + widthBorder * 2, sizePart + widthBorder);
-                        }
-                        dominoUI.originalX = x;
-                        dominoUI.originalY = y;
-                        addComponentListener(this);
-                    }
-
-                    @Override
-                    public void componentMoved(ComponentEvent e) {
-                    }
-
-                    @Override
-                    public void componentShown(ComponentEvent e) {
-                    }
-
-                    @Override
-                    public void componentHidden(ComponentEvent e) {
-                    }
-                });
-            }
-        }
-
-        public void setCurrentPlayer (Player player){
-            currentPlayerLabel.setText(player.name);
-            currentPlayerLabel.setForeground(player.color);
-        }
-
-        public void showScores (ArrayList < Player > list) {
-            JPanel scorePanel = new JPanel(new GridBagLayout());
-            scorePanel.setBackground(Color.orange);
-            scorePanel.setBounds(getWidth() / 2 - getWidth() / 8, getHeight() / 2 - getWidth() / 8, getWidth() / 4, getHeight() / 3);
-            GridBagConstraints c = new GridBagConstraints();
-            c.gridx = 0;
-            c.gridy = 0;
-            c.gridwidth = 2;
-            JLabel score = new JLabel("Scores");
-            score.setFont(new Font("Time New Roman", Font.PLAIN, getHeight() / 23));
-            scorePanel.add(score, c);
-            int i = 0;
-            for (Player player : list) {
-                JLabel label = new JLabel(player.name);
-                label.setFont(new Font("Time New Roman", Font.PLAIN, getHeight() / 35));
-                GridBagConstraints c1 = new GridBagConstraints();
-                c1.gridx = 0;
-                scorePanel.add(label, c1);
-                JLabel s = new JLabel(String.valueOf(player.totalScore));
-                s.setFont(new Font("Time New Roman", Font.PLAIN, getHeight() / 35));
-                GridBagConstraints c2 = new GridBagConstraints();
-                c2.gridx = 1;
-                scorePanel.add(s, c2);
-                i++;
-            }
-            String butLabel = "Rejouer";
-            if (Application.getInstance().turns > 1) {
-                butLabel = "Prochaine Manche";
-            }
-            JButton button = new JButton(butLabel);
-            button.addActionListener(this);
-            GridBagConstraints c1 = new GridBagConstraints();
-            c1.gridx = 0;
-            c1.gridwidth = 2;
-            scorePanel.add(button, c1);
-            JButton buttonMenu = new JButton("Menu Principal");
-            buttonMenu.addActionListener(this);
-            scorePanel.add(buttonMenu, c1);
-            add(scorePanel);
-            scorePanel.validate();
-        }
-
-        @Override
-        //used when a button has been pressed on the scores pane
-        public void actionPerformed (ActionEvent e){
-            if (e.getActionCommand().equals("Menu Principal")) {
-                //go back to the menu
-                MenuUI menu = new MenuUI(getWidth(), getHeight());
-                Application.getInstance().setGM(menu);
-            } else {
-                Thread thread = new Thread(() -> {
-                    //create another game with the sames players
-                    GraphicsManager graphics = new GraphicsManager(getWidth(), getHeight());
-                    Application.getInstance().setGM(graphics);
-                    GameManager game = new GameManager(graphics);
-                    if (Application.getInstance().turns > 1) {
-                        Application.getInstance().turns--;
-                        for (Player player : GameManager.listPlayers) {
-                            player.newBoard(player.board.size);
-                        }
+    public void newLineDominos(GameManager game, List<Domino> list, int n) {
+        for (Domino domino : list) {
+            int x = getWidth() / 2 - (2 * sizePart + 2 * widthBorder) - getWidth() / 80 + n * (2 * sizePart + 2 * widthBorder + getWidth() / 80);
+            int y = getHeight() / 5 + list.indexOf(domino) * (getHeight() / 20 + (2 * (sizePart + widthBorder)));
+            DominoUI dominoUI = new DominoUI(domino, x, y, this, game);
+            dominoUI.place = list.indexOf(domino);
+            dominoUI.originalX = x;
+            dominoUI.originalY = y;
+            add(dominoUI);
+            setComponentZOrder(dominoUI, 0);
+            addComponentListener(new ComponentListener() {
+                @Override
+                public void componentResized(ComponentEvent e) {
+                    removeComponentListener(this);
+                    int x = getWidth() / 2 - (2 * sizePart + 2 * widthBorder) - getWidth() / 80 + n * (2 * sizePart + 2 * widthBorder + getWidth() / 80);
+                    int y = getHeight() / 5 + dominoUI.place * (getHeight() / 20 + (2 * (sizePart + widthBorder)));
+                    dominoUI.setLocation(x, y);
+                    //
+                    if (dominoUI.getHeight() > dominoUI.getWidth()) {
+                        dominoUI.setSize(sizePart + widthBorder, 2 * sizePart + widthBorder * 2);
                     } else {
-                        ArrayList<Player> newListPlayers = new ArrayList<>();
-                        for (Player player : GameManager.listPlayers) {
-                            newListPlayers.add(new Player(player.name, player.color));
-                        }
-                        GameManager.listPlayers = newListPlayers;
+                        dominoUI.setSize(2 * sizePart + widthBorder * 2, sizePart + widthBorder);
                     }
-                    GameManager.specialRules.remove(GameManager.Rule.DYNASTY);
-                    game.newGame(GameManager.listPlayers, GameManager.specialRules);
-                });
-                thread.start();
-            }
+                    dominoUI.originalX = x;
+                    dominoUI.originalY = y;
+                    addComponentListener(this);
+                }
+
+                @Override
+                public void componentMoved(ComponentEvent e) {
+                }
+
+                @Override
+                public void componentShown(ComponentEvent e) {
+                }
+
+                @Override
+                public void componentHidden(ComponentEvent e) {
+                }
+            });
         }
     }
+
+    public void setCurrentPlayer(Player player) {
+        currentPlayerLabel.setText(player.name);
+        currentPlayerLabel.setForeground(player.color);
+    }
+
+    public void showScores(ArrayList<Player> list) {
+        ScoresUI scores = new ScoresUI(list);
+        addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                removeComponentListener(this);
+                scores.setBounds(Application.getInstance().getWidth() / 2 - Application.getInstance().getWidth() / 8, Application.getInstance().getHeight() / 2 - Application.getInstance().getHeight() / 8, Application.getInstance().getWidth() / 4, Application.getInstance().getHeight() / 3);
+                addComponentListener(this);
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+            }
+        });
+        add(scores);
+        setSize(getWidth()+7,getHeight()+8);
+        setSize(getWidth()-7,getHeight()-8);
+    }
+}

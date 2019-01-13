@@ -14,7 +14,7 @@ class PlayerUI extends JPanel {
     final DominoPartUI[][] boardUI;
     int place;
 
-    PlayerUI(Player p, int size,int border) {
+    PlayerUI(Player p, int size, int border) {
         player = p;
         sizePart = size;
         widthBorder = border;
@@ -42,23 +42,26 @@ class PlayerUI extends JPanel {
                         boardUI[k][i].setBounds((i * (sizePart + widthBorder)) + widthBorder, (k * (sizePart + widthBorder)) + widthBorder, sizePart, sizePart);
                     }
                 }
-                label.setBounds(widthBorder, getHeight() - Application.getInstance().getHeight()/26, getWidth(), Application.getInstance().getHeight()/35);
-                color.setBounds(getWidth() - Application.getInstance().getHeight()/26, getHeight() - Application.getInstance().getHeight()/26, Application.getInstance().getHeight()/35, Application.getInstance().getHeight()/35);
+                label.setBounds(widthBorder, getHeight() - Application.getInstance().getHeight() / 26, getWidth(), Application.getInstance().getHeight() / 35);
+                color.setBounds(getWidth() - Application.getInstance().getHeight() / 26, getHeight() - Application.getInstance().getHeight() / 26, Application.getInstance().getHeight() / 35, Application.getInstance().getHeight() / 35);
 
-                setSize(p.board.size * (sizePart + widthBorder) + widthBorder, p.board.size * (sizePart + widthBorder) + widthBorder + (int)(Application.getInstance().getHeight()/23.4));
+                setSize(p.board.size * (sizePart + widthBorder) + widthBorder, p.board.size * (sizePart + widthBorder) + widthBorder + (int) (Application.getInstance().getHeight() / 23.4));
                 addComponentListener(this);
             }
+
             @Override
             public void componentMoved(ComponentEvent e) {
             }
+
             @Override
             public void componentShown(ComponentEvent e) {
             }
+
             @Override
             public void componentHidden(ComponentEvent e) {
             }
         });
-        setSize(p.board.size * (size + border) + border, p.board.size * (size + border) + border + (int)(Application.getInstance().getHeight()/23.4));
+        setSize(p.board.size * (size + border) + border, p.board.size * (size + border) + border + (int) (Application.getInstance().getHeight() / 23.4));
     }
 
     public void paintComponent(Graphics g) {

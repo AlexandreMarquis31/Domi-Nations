@@ -1,9 +1,8 @@
 package UI;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.net.URL;
+import java.io.InputStream;
 
 // a unique crown image used in dominos
 final class CrownUI {
@@ -15,8 +14,8 @@ final class CrownUI {
     static BufferedImage getInstance() {
         if (INSTANCE == null) {
             try {
-                URL resource = ClassLoader.getSystemResource("crown.png");
-                INSTANCE = ImageIO.read(resource);
+                InputStream in = CrownUI.class.getResourceAsStream("crown.png");
+                INSTANCE = ImageIO.read(in);
             } catch (Exception e) {
                 return null;
             }

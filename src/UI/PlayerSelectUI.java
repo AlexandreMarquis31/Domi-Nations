@@ -7,12 +7,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.ColorPicker;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 class PlayerSelectUI extends JPanel {
@@ -31,6 +30,12 @@ class PlayerSelectUI extends JPanel {
         name.setHorizontalAlignment(SwingConstants.CENTER);
         add(name);
         nameField = new JTextField("Joueur " + num, 0);
+        nameField.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+                if (nameField.getText().length() >= 14 ) // limit textfield to 3 characters
+                    e.consume();
+            }
+        });
         add(nameField);
         JLabel color = new JLabel("Couleur du Joueur");
         color.setHorizontalAlignment(SwingConstants.CENTER);
@@ -83,14 +88,14 @@ class PlayerSelectUI extends JPanel {
             @Override
             public void componentResized(ComponentEvent e) {
                 removeComponentListener(this);
-                titre.setFont(new Font("New Time Roman", Font.PLAIN, getHeight()/14));
+                titre.setFont(new Font("New Time Roman", Font.PLAIN, getHeight() / 14));
                 titre.setBounds(0, 0, getWidth(), getHeight() / 8);
                 name.setBounds(getWidth() / 8, getHeight() / 8, 6 * getWidth() / 8, getHeight() / 8);
                 nameField.setBounds(getWidth() / 8, 4 * getHeight() / 16, 6 * getWidth() / 8, getHeight() / 8);
-                name.setFont(new Font("New Time Roman", Font.PLAIN, getHeight()/20));
+                name.setFont(new Font("New Time Roman", Font.PLAIN, getHeight() / 20));
                 color.setBounds(getWidth() / 8, 13 * getHeight() / 32, 6 * getWidth() / 8, getHeight() / 8);
-                color.setFont(new Font("New Time Roman", Font.PLAIN, getHeight()/20));
-                IASwitch.setFont(new Font("New Time Roman", Font.PLAIN, getHeight()/20));
+                color.setFont(new Font("New Time Roman", Font.PLAIN, getHeight() / 20));
+                IASwitch.setFont(new Font("New Time Roman", Font.PLAIN, getHeight() / 20));
                 fxPanel.setBounds(getWidth() / 8, 17 * getHeight() / 32, getWidth() * 6 / 8, 2 * getHeight() / 20);
                 Platform.runLater(() -> {
                     colorField.setMaxSize(getWidth() * 6 / 8, 2 * getHeight() / 20);
@@ -101,12 +106,15 @@ class PlayerSelectUI extends JPanel {
                 playerSwitch.setBounds(getWidth() / 8, 7 * getHeight() / 8, 6 * getWidth() / 8, getHeight() / 8);
                 addComponentListener(this);
             }
+
             @Override
             public void componentMoved(ComponentEvent e) {
             }
+
             @Override
             public void componentShown(ComponentEvent e) {
             }
+
             @Override
             public void componentHidden(ComponentEvent e) {
             }

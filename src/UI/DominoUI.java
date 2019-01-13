@@ -37,8 +37,8 @@ class DominoUI extends JPanel implements KeyListener {
         this.setComponentZOrder(selectedMark, 0);
         this.setComponentZOrder(do2, 1);
         this.setComponentZOrder(do1, 1);
-        do1.setBounds(GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2, GraphicsManager.sizePart, GraphicsManager.sizePart);
-        do2.setBounds(GraphicsManager.sizePart + 3*GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2, GraphicsManager.sizePart, GraphicsManager.sizePart);
+        do1.setBounds(GraphicsManager.widthBorder / 2, GraphicsManager.widthBorder / 2, GraphicsManager.sizePart, GraphicsManager.sizePart);
+        do2.setBounds(GraphicsManager.sizePart + 3 * GraphicsManager.widthBorder / 2, GraphicsManager.widthBorder / 2, GraphicsManager.sizePart, GraphicsManager.sizePart);
 
         addComponentListener(new ComponentListener() {
             @Override
@@ -48,16 +48,16 @@ class DominoUI extends JPanel implements KeyListener {
                 do1.setSize(GraphicsManager.sizePart, GraphicsManager.sizePart);
                 do2.setSize(GraphicsManager.sizePart, GraphicsManager.sizePart);
                 if (getHeight() > getWidth()) {
-                    if (do2.getY() == GraphicsManager.widthBorder/2) {
-                        do1.setLocation(GraphicsManager.widthBorder/2, do1.getWidth() + 3*GraphicsManager.widthBorder/2 );
+                    if (do2.getY() == GraphicsManager.widthBorder / 2) {
+                        do1.setLocation(GraphicsManager.widthBorder / 2, do1.getWidth() + 3 * GraphicsManager.widthBorder / 2);
                     } else {
-                        do2.setLocation(GraphicsManager.widthBorder/2, do1.getWidth()+ 3*GraphicsManager.widthBorder/2);
+                        do2.setLocation(GraphicsManager.widthBorder / 2, do1.getWidth() + 3 * GraphicsManager.widthBorder / 2);
                     }
                 } else {
-                    if (do2.getX() == GraphicsManager.widthBorder/2) {
-                        do1.setLocation(do1.getWidth() + 3*GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
+                    if (do2.getX() == GraphicsManager.widthBorder / 2) {
+                        do1.setLocation(do1.getWidth() + 3 * GraphicsManager.widthBorder / 2, GraphicsManager.widthBorder / 2);
                     } else {
-                        do2.setLocation(do1.getWidth()+ 3*GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
+                        do2.setLocation(do1.getWidth() + 3 * GraphicsManager.widthBorder / 2, GraphicsManager.widthBorder / 2);
                     }
                 }
                 addComponentListener(this);
@@ -75,7 +75,7 @@ class DominoUI extends JPanel implements KeyListener {
             public void componentHidden(ComponentEvent e) {
             }
         });
-        setSize(2 * GraphicsManager.sizePart + GraphicsManager.widthBorder*2, GraphicsManager.sizePart + GraphicsManager.widthBorder);
+        setSize(2 * GraphicsManager.sizePart + GraphicsManager.widthBorder * 2, GraphicsManager.sizePart + GraphicsManager.widthBorder);
         MouseInputAdapter mi = new MouseInputAdapter() {
             int clickX = 0;
             int clickY = 0;
@@ -188,19 +188,18 @@ class DominoUI extends JPanel implements KeyListener {
 
     private void rotationRight() {
         if (getHeight() > getWidth()) {
-            if (do2.getY() == GraphicsManager.widthBorder/2) {
-                System.out.println("aaa");
-                do2.setLocation(do2.getWidth() + (3*GraphicsManager.widthBorder/2), GraphicsManager.widthBorder/2);
-                do1.setLocation(GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
+            if (do2.getY() == GraphicsManager.widthBorder / 2) {
+                do2.setLocation(do2.getWidth() + (3 * GraphicsManager.widthBorder / 2), GraphicsManager.widthBorder / 2);
+                do1.setLocation(GraphicsManager.widthBorder / 2, GraphicsManager.widthBorder / 2);
             } else {
-                do1.setLocation(do2.getWidth() + 3*GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
-                do2.setLocation(GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
+                do1.setLocation(do2.getWidth() + 3 * GraphicsManager.widthBorder / 2, GraphicsManager.widthBorder / 2);
+                do2.setLocation(GraphicsManager.widthBorder / 2, GraphicsManager.widthBorder / 2);
             }
         } else {
-            if (do2.getX() == GraphicsManager.widthBorder/2) {
-                do1.setLocation(GraphicsManager.widthBorder/2, do2.getWidth() + 3*GraphicsManager.widthBorder/2);
+            if (do2.getX() == GraphicsManager.widthBorder / 2) {
+                do1.setLocation(GraphicsManager.widthBorder / 2, do2.getWidth() + 3 * GraphicsManager.widthBorder / 2);
             } else {
-                do2.setLocation(GraphicsManager.widthBorder/2, do1.getWidth() + 3*GraphicsManager.widthBorder/2);
+                do2.setLocation(GraphicsManager.widthBorder / 2, do1.getWidth() + 3 * GraphicsManager.widthBorder / 2);
             }
         }
         selectedMark.setLocation(selectedMark.getY(), selectedMark.getX());
@@ -209,19 +208,19 @@ class DominoUI extends JPanel implements KeyListener {
 
     private void rotationLeft() {
         if (getHeight() > getWidth()) {
-            if (do2.getY() == GraphicsManager.widthBorder/2) {
-                do1.setLocation(do2.getWidth() + 3*GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
+            if (do2.getY() == GraphicsManager.widthBorder / 2) {
+                do1.setLocation(do2.getWidth() + 3 * GraphicsManager.widthBorder / 2, GraphicsManager.widthBorder / 2);
             } else {
-                do2.setLocation(do1.getWidth() + 3*GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
-                do1.setLocation(GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
+                do2.setLocation(do1.getWidth() + 3 * GraphicsManager.widthBorder / 2, GraphicsManager.widthBorder / 2);
+                do1.setLocation(GraphicsManager.widthBorder / 2, GraphicsManager.widthBorder / 2);
             }
         } else {
-            if (do2.getX() == GraphicsManager.widthBorder/2) {
-                do2.setLocation(GraphicsManager.widthBorder/2, do1.getWidth() + 3*GraphicsManager.widthBorder/2);
-                do1.setLocation(GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
+            if (do2.getX() == GraphicsManager.widthBorder / 2) {
+                do2.setLocation(GraphicsManager.widthBorder / 2, do1.getWidth() + 3 * GraphicsManager.widthBorder / 2);
+                do1.setLocation(GraphicsManager.widthBorder / 2, GraphicsManager.widthBorder / 2);
             } else {
-                do2.setLocation(GraphicsManager.widthBorder/2, GraphicsManager.widthBorder/2);
-                do1.setLocation(GraphicsManager.widthBorder/2, do2.getWidth() + 3*GraphicsManager.widthBorder/2);
+                do2.setLocation(GraphicsManager.widthBorder / 2, GraphicsManager.widthBorder / 2);
+                do1.setLocation(GraphicsManager.widthBorder / 2, do2.getWidth() + 3 * GraphicsManager.widthBorder / 2);
             }
         }
         selectedMark.setLocation(selectedMark.getY(), selectedMark.getX());
