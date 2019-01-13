@@ -28,9 +28,9 @@ public class Application extends JFrame implements ActionListener {
         int height = screenHeight - 100;
         int screenWidth = (int) screenSize.getWidth();
         int width = height * 8 / 7;
-        //Timer t = new Timer(30, this);
-        //t.start();
-        resisingTimer= new Timer(200,new ActionListener() {
+        Timer t = new Timer(30, this);
+        t.start();
+        /*resisingTimer= new Timer(200,new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("resize");
@@ -44,9 +44,9 @@ public class Application extends JFrame implements ActionListener {
                 oldHeight = getHeight();
             }
         });
-        resisingTimer.setRepeats(false);
+        resisingTimer.setRepeats(false);*/
         oldHeight = height;
-        addComponentListener(new ComponentListener() {
+        /*addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
                 Application app = (Application) e.getComponent();
@@ -55,7 +55,6 @@ public class Application extends JFrame implements ActionListener {
                 } else {
                     resisingTimer.start();
                 }
-
             }
 
             @Override
@@ -72,7 +71,7 @@ public class Application extends JFrame implements ActionListener {
             public void componentHidden(ComponentEvent e) {
 
             }
-        });
+        });*/
         setBounds(screenWidth / 2 - width / 2, screenHeight / 2 - height / 2, width, height + getInsets().top);
         setVisible(true);
     }
