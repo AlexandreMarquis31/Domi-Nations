@@ -111,7 +111,15 @@ public class IA_Basique {
             }
             i = i+1;
         }
-        return dominosToChoose.get(0);
+        ArrayList<Domino> dominosToChoose2 = new ArrayList<>(dominosToChoose);
+        for(int j = 0 ; j<dominosToChoose.size();j++){ //on enlève de cette liste tous les dominos qui ne donnent pas le meilleur score
+            if(scoreEtPositionDominoBasique(dominosToChoose.get(i),player).get(4)<= scoreEtPositionDominoBasique(dominosToChoose.get(0),player).get(4)){
+                dominosToChoose2.remove(dominosToChoose.get(j));
+            }
+        }
+        ArrayList<Domino> dominosToChoose3 = new ArrayList<>(dominosToChoose2);
+        for(int k = dominosToChoose.size()-1 ; k>=0 ; k--) dominosToChoose3.add(dominosToChoose.get(k)); //on inverse l'ordre de sorte à ce que si 2 dominos sont aussi intéressants, on prend celui qui nous permettra de jouer plus vite
+        return dominosToChoose3.get(0);
     }
 
 
