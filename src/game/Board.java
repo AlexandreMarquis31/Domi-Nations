@@ -32,12 +32,10 @@ public class Board {
     }
 
     int getMinX() {
-        System.out.println("min x   :"+getMin(true));
         return getMin(true);
     }
 
     int getMinY() {
-        System.out.println("min y   :"+getMin(false));
         return getMin(false);
     }
 
@@ -56,12 +54,10 @@ public class Board {
     }
 
     int getMaxX() {
-        System.out.println("max x   :"+getMax(true));
         return getMax(true);
     }
 
     int getMaxY() {
-        System.out.println("max y   :"+getMax(false));
         return getMax(false);
     }
 
@@ -97,8 +93,7 @@ public class Board {
     private Pair<Integer, Integer> calculateScoreZone(DominoPart part, int y, int x) {
         int totalArea = 1;
         int totalCrown = part.crown;
-        //System.out.println(part + "y : "+y +"  x : "+x);
-        Pair<Integer, Integer> newPair = new Pair<>(0, 0);
+        Pair<Integer, Integer> newPair;
         part.counted = true;
         if (x < array[y].length - 1 && array[y][x + 1].type.equals(part.type) && !array[y][x + 1].counted) {
             newPair = calculateScoreZone(array[y][x + 1], y, x + 1);

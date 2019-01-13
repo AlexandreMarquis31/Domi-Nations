@@ -38,10 +38,10 @@ public class Domino {
         if (x + 1 < board.size && (board.get(x + 1, y).type.equals(part.type) || board.get(x + 1, y).type.equals("Chateau"))) {
             return true;
         }
-        if (x - 1 > 0 && (board.get(x - 1, y).type.equals(part.type) || board.get(x - 1, y).type.equals("Chateau"))) {
+        if (x > 0 && (board.get(x - 1, y).type.equals(part.type) || board.get(x - 1, y).type.equals("Chateau"))) {
             return true;
         }
-        return y - 1 > 0 && (board.get(x, y - 1).type.equals(part.type) || board.get(x, y - 1).type.equals("Chateau"));
+        return y > 0 && (board.get(x, y - 1).type.equals(part.type) || board.get(x, y - 1).type.equals("Chateau"));
     }
 
     //verify that a news dominoParts a the 2 positions will not be out of the rule's board boundaries

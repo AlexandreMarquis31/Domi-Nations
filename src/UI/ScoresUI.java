@@ -95,15 +95,13 @@ class ScoresUI extends JPanel implements ActionListener {
                 GameManager game = new GameManager(graphics);
                 if (Application.getInstance().turns > 1) {
                     Application.getInstance().turns--;
-                    for (Player player : GameManager.listPlayers) {
-                        player.newBoard(player.board.size);
-                    }
                 } else {
-                    ArrayList<Player> newListPlayers = new ArrayList<>();
                     for (Player player : GameManager.listPlayers) {
-                        newListPlayers.add(new Player(player.name, player.color));
+                        player.totalScore = 0;
                     }
-                    GameManager.listPlayers = newListPlayers;
+                }
+                for (Player player : GameManager.listPlayers) {
+                    player.newBoard(player.board.size);
                 }
                 GameManager.specialRules.remove(GameManager.Rule.DYNASTY);
                 game.newGame(GameManager.listPlayers, GameManager.specialRules);

@@ -10,8 +10,8 @@ import java.awt.*;
 import java.awt.event.*;
 
 
-class DominoUI extends JPanel implements KeyListener {
-    private final Domino domino;
+public class DominoUI extends JPanel implements KeyListener {
+    public final Domino domino;
     private final DominoPartUI do1;
     private final DominoPartUI do2;
     int originalX = 0;

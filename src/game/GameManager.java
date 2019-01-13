@@ -1,14 +1,18 @@
 package game;
 
+import IA.IABasic;
 import UI.Application;
+import UI.DominoUI;
 import UI.GraphicsManager;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.List;
 
 public class GameManager {
     private BufferedReader reader;
@@ -138,6 +142,8 @@ public class GameManager {
     private void chooseDomino(Player p) {
         gManager.labelIndications.setText("Choisissez votre Domino.");
         if (p.ia) {
+            Domino dominoSelect = IABasic.IAChooseDomino(selectableDominos);
+            Objects.requireNonNull(dominoSelect).player = p;
             /*Player adv = null;
             if (listPlayers.size() ==2){
                 if (listPlayers.get(0) == p) adv = listPlayers.get(1);
@@ -145,8 +151,8 @@ public class GameManager {
             }
             Domino dominoSelect = dominoSelection(p,adv);
             System.out.println(dominoSelect);
-            dominoSelect.player = p;
-            currentDomino = dominoSelect;*/
+            dominoSelect.player = p;*/
+            currentDomino = dominoSelect;
         } else {
             synchronized (lock) {
                 while (p.currentState != Player.state.DOMINOSELECTED) {
@@ -168,6 +174,14 @@ public class GameManager {
         currentDomino = domino;
         gManager.labelIndications.setText("Placez votre Domino.");
         if (domino.player.ia) {
+            IABasic.IAPlaceDomino(domino);
+            for (Component comp : gManager.getComponents()){
+                if(comp instanceof DominoUI){
+                    if (((DominoUI)comp).domino == domino){
+                        gManager.remove(comp);
+                    }
+                }
+            }
             //ArrayList<Integer> coords = placeDominoIA(domino);
             //domino.player.board.set(coords.get(0),coords.get(1), domino.part1);
             //domino.player.board.set(coords.get(3),coords.get(2),domino.part2);
