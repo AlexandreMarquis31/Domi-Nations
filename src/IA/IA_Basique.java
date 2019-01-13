@@ -1,8 +1,6 @@
 package IA;
 
 import game.Domino;
-import game.DominoPart;
-import game.GameManager;
 import game.Player;
 import game.Board;
 
@@ -14,9 +12,6 @@ public class IA_Basique {
 
     static public ArrayList<Integer> scoreEtPositionDominoBasique (Domino domino, Player player){
         ArrayList<ArrayList<Integer>> bestPositionsWithScore = new ArrayList<>();
-        System.out.println("SALE PUTE");
-        System.out.println("player = " +player);
-        System.out.println("player.board = "+player.board);
         for (int i = 0; i<player.board.size -1  ; i++){
             for (int k = 0; k<player.board.size ; k++){
                 if (domino.canBePlaced(i,k,i+1,k,player.board)){
