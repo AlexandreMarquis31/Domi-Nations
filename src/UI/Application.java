@@ -15,6 +15,7 @@ public class Application extends JFrame implements ActionListener {
     private static Application instance = null;
     public MenuUI menuUI;
     private int oldHeight;
+    private Timer resisingTimer;
 
     public Application(String str) {
         super(str);
@@ -27,23 +28,33 @@ public class Application extends JFrame implements ActionListener {
         int height = screenHeight - 100;
         int screenWidth = (int) screenSize.getWidth();
         int width = height * 8 / 7;
-        Timer t = new Timer(30, this);
-        t.start();
+        //Timer t = new Timer(30, this);
+        //t.start();
+        resisingTimer= new Timer(200,new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("resize");
+                if (getWidth() != getHeight() * 8 / 7) {
+                    if (oldHeight != getHeight()) {
+                        setSize(getHeight() * 8 / 7, getHeight());
+                    } else {
+                        setSize(getWidth(), getWidth() * 7 / 8);
+                    }
+                }
+                oldHeight = getHeight();
+            }
+        });
+        resisingTimer.setRepeats(false);
         oldHeight = height;
         addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
                 Application app = (Application) e.getComponent();
-                app.removeComponentListener(this);
-                if (app.getWidth() != app.getHeight() * 8 / 7) {
-                    if (oldHeight > app.getHeight()) {
-                        app.setSize(app.getHeight() * 8 / 7, app.getHeight());
-                    } else {
-                        app.setSize(app.getWidth(), app.getWidth() * 7 / 8);
-                    }
-                    oldHeight = app.getHeight();
+                if (resisingTimer.isRunning()){
+                    resisingTimer.restart();
+                } else {
+                    resisingTimer.start();
                 }
-                app.addComponentListener(this);
 
             }
 
