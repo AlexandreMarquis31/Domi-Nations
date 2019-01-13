@@ -1,8 +1,6 @@
 package IA;
 
 import game.Domino;
-import game.DominoPart;
-import game.GameManager;
 import game.Player;
 import game.Board;
 
