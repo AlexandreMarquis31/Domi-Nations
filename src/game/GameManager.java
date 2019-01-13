@@ -1,6 +1,7 @@
 package game;
 
 import IA.IABasic;
+import IA.IA_Basique;
 import UI.Application;
 import UI.DominoUI;
 import UI.GraphicsManager;
@@ -142,7 +143,7 @@ public class GameManager {
     private void chooseDomino(Player p) {
         gManager.labelIndications.setText("Choisissez votre Domino.");
         if (p.ia) {
-            Domino dominoSelect = IABasic.IAChooseDomino(selectableDominos);
+            Domino dominoSelect = IA_Basique.chooseDominoBasique(selectableDominos, p);
             Objects.requireNonNull(dominoSelect).player = p;
             /*Player adv = null;
             if (listPlayers.size() ==2){
@@ -174,7 +175,7 @@ public class GameManager {
         currentDomino = domino;
         gManager.labelIndications.setText("Placez votre Domino.");
         if (domino.player.ia) {
-            IABasic.IAPlaceDomino(domino);
+            IA_Basique.placeDominoBasique(domino);
             for (Component comp : gManager.getComponents()){
                 if(comp instanceof DominoUI){
                     if (((DominoUI)comp).domino == domino){

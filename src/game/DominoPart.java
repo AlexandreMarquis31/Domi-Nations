@@ -5,7 +5,7 @@ public class DominoPart {
     public final String type;
     boolean counted = false;
 
-    DominoPart(String type, int crown) {
+    public DominoPart(String type, int crown) {
         this.type = type;
         this.crown = crown;
     }

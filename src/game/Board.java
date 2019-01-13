@@ -70,7 +70,7 @@ public class Board {
     }
 
 
-    int calculateScore() {
+    public int calculateScore() {
         int score = 0;
         for (int i = 0; i < size; i++) {
             for (int k = 0; k < size; k++) {
