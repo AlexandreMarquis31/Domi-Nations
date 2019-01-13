@@ -97,10 +97,10 @@ class RulesUI extends JPanel implements ActionListener {
                 str += "\n\nAjouter 5 points de bonus si le royaume est complet.\n";
                 break;
             case "Empire du Milieu":
-                str += "\n\nAjouter 10 points de bonus si le château se retrouve au centre du royaume.";
+                str += "\n\nAjouter 10 points de bonus si le chateau se retrouve au centre du royaume.";
                 break;
             case "Dynastie":
-                str += "\n\nJouer 3 tours de suite. À la fin des trois tours, le joueur qui a le plus de points remporte la partie.";
+                str += "\n\nJouer 3 tours de suite. A la fin des trois tours, le joueur qui a le plus de points remporte la partie.";
                 break;
         }
         ruleDetails.setText(str);
