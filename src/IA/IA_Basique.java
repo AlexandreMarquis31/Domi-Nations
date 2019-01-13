@@ -14,17 +14,13 @@ public class IA_Basique {
 
     static public ArrayList<Integer> scoreEtPositionDominoBasique (Domino domino, Player player){
         ArrayList<ArrayList<Integer>> bestPositionsWithScore = new ArrayList<>();
-        System.out.println("SALE PUTE");
-        System.out.println("player = " +player);
-        System.out.println("player.board = "+player.board);
         for (int i = 0; i<player.board.size -1  ; i++){
             for (int k = 0; k<player.board.size ; k++){
                 if (domino.canBePlaced(i,k,i+1,k,player.board)){
                     Board boardCopy = player.board.copy();
                     boardCopy.set(i,k,domino.part1);
                     boardCopy.set(i+1,k,domino.part2);
-                    ArrayList<Integer> positionEtScore = new ArrayList<>();
-                    positionEtScore.addAll(Arrays.asList(i,k,i+1,k,boardCopy.calculateScore()));
+                    ArrayList<Integer> positionEtScore = new ArrayList<>(Arrays.asList(i, k, i + 1, k, boardCopy.calculateScore()));
                     bestPositionsWithScore.add(positionEtScore);
 
                 }
@@ -37,8 +33,7 @@ public class IA_Basique {
                     boardCopy.set(i,k,domino.part1);
                     boardCopy.set(i,k+1,domino.part2);
                     int score = boardCopy.calculateScore();
-                    ArrayList<Integer> positionEtScore = new ArrayList<>();
-                    positionEtScore.addAll(Arrays.asList(i,k,i,k+1,score));
+                    ArrayList<Integer> positionEtScore = new ArrayList<>(Arrays.asList(i, k, i, k + 1, score));
                     bestPositionsWithScore.add(positionEtScore);
                 }
             }
@@ -50,8 +45,7 @@ public class IA_Basique {
                     boardCopy.set(i+1,k,domino.part1);
                     boardCopy.set(i,k,domino.part2);
                     int score = boardCopy.calculateScore();
-                    ArrayList<Integer> positionEtScore = new ArrayList<>();
-                    positionEtScore.addAll(Arrays.asList(i+1,k,i,k,score));
+                    ArrayList<Integer> positionEtScore = new ArrayList<>(Arrays.asList(i + 1, k, i, k, score));
                     bestPositionsWithScore.add(positionEtScore);
                 }
             }
@@ -63,8 +57,7 @@ public class IA_Basique {
                     boardCopy.set(i,k+1,domino.part1);
                     boardCopy.set(i,k,domino.part2);
                     int score = boardCopy.calculateScore();
-                    ArrayList<Integer> positionEtScore = new ArrayList<>();
-                    positionEtScore.addAll(Arrays.asList(i,k+1,i,k,score));
+                    ArrayList<Integer> positionEtScore = new ArrayList<>(Arrays.asList(i, k + 1, i, k, score));
                     bestPositionsWithScore.add(positionEtScore);
                 }
             }

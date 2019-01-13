@@ -4,7 +4,7 @@ import game.Domino;
 
 import java.util.List;
 
-public class IABasic {
+public class IA_Nulle {
     static public Domino IAChooseDomino(List<Domino> list){
         for (Domino domino : list){
             if (domino.player == null) return domino;

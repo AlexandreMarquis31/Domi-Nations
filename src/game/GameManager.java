@@ -1,6 +1,5 @@
 package game;
 
-import IA.IABasic;
 import IA.IA_Basique;
 import UI.Application;
 import UI.DominoUI;
@@ -17,7 +16,6 @@ import java.util.List;
 
 public class GameManager {
     private BufferedReader reader;
-
     public enum Rule {
         MIDDLEEARTH,
         HARMONY,
@@ -143,16 +141,8 @@ public class GameManager {
     private void chooseDomino(Player p) {
         gManager.labelIndications.setText("Choisissez votre Domino.");
         if (p.ia) {
-            Domino dominoSelect = IA_Basique.chooseDominoBasique(selectableDominos, p);
+            Domino dominoSelect = IA_Basique.chooseDominoBasique(selectableDominos,p);
             Objects.requireNonNull(dominoSelect).player = p;
-            /*Player adv = null;
-            if (listPlayers.size() ==2){
-                if (listPlayers.get(0) == p) adv = listPlayers.get(1);
-                if (listPlayers.get(1) == p) adv = listPlayers.get(0);
-            }
-            Domino dominoSelect = dominoSelection(p,adv);
-            System.out.println(dominoSelect);
-            dominoSelect.player = p;*/
             currentDomino = dominoSelect;
         } else {
             synchronized (lock) {
@@ -183,10 +173,7 @@ public class GameManager {
                     }
                 }
             }
-            //ArrayList<Integer> coords = placeDominoIA(domino);
-            //domino.player.board.set(coords.get(0),coords.get(1), domino.part1);
-            //domino.player.board.set(coords.get(3),coords.get(2),domino.part2);
-            //domino.player .currentState = Player.state.IDLE;
+            domino.player .currentState = Player.state.IDLE;
         } else {
             synchronized (lock) {
                 while (domino.player.currentState != Player.state.IDLE) {
@@ -222,8 +209,6 @@ public class GameManager {
             int minX = player.board.getMinX();
             int maxY = player.board.getMaxY();
             int maxX = player.board.getMaxX();
-            System.out.println("minX "+minX+" minY  : "+minY + "  maxX  : "+maxX+"   maxY  : "+maxY);
-            System.out.println(" x : "+(minX+maxX)/2+" y : "+(minY+maxY)/2+" type : "+player.board.get((minX+maxX)/2,(minY+maxY)/2).type);
             if (player.board.get(((minX+maxX)/2),((minY+maxY)/2)).type.equals("Chateau")) {
                 score += 10;
             }
